@@ -1,4 +1,6 @@
 {% extends 'partials/base.html' %}
+{% load static %}
+
 
 {% block content %}
 <div class="row">
@@ -10,6 +12,7 @@
                 <p class="card-title-desc">Bootstrap-wysihtml5 is a javascript
                     plugin that makes it easy to create simple, beautiful wysiwyg editors
                     with the help of wysihtml5 and Twitter Bootstrap.</p>
+                <img src="{% static 'images/comingsoon-bg.jpg' %}" alt="" style="width: 100px; height: 100px;">
 
                 <form method="post">
                     <textarea id="elm1" name="area"></textarea>
