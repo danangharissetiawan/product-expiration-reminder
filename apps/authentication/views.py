@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views import View
-from authentication.forms import UserRegistrationForm,UserLoginForm,RecoverPasswordForm,LockScreenForm
-from django.http import JsonResponse,HttpResponse
+from authentication.forms import UserRegistrationForm, UserLoginForm, RecoverPasswordForm, LockScreenForm
+from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
@@ -16,65 +16,61 @@ from django.contrib import messages
 
 # Login
 class LoginView(View):
-    username = [];
-    def get(self,request):
+    username = []
+
+    def get(self, request):
         if 'username' in request.session:
             return redirect('dashboard')
         else:
-            greeting={}
-            greeting['form'] = UserLoginForm
-            return render(request,'pages/authentication/auth-login.html',greeting)
+            greeting = {'form': UserLoginForm}
+            return render(request, 'pages/authentication/auth-login.html', greeting)
 
-    def post(self,request):
-        if(request.method == "POST"):
+    def post(self, request):
+        if request.method == "POST":
             username = request.POST.get('username')
             password = request.POST.get('password')
 
-            if(username != '' and password != ''):
+            if username != '' and password != '':
                 user = auth.authenticate(username=username, password=password)
-                if user is not None:       
+                if user is not None:
                     request.session['username'] = username
                     auth.login(request, user)
-                    request.session.set_expiry(300)
+                    request.session.set_expiry(3000)
                     LoginView.username.append(username)
-                    data={}
-                    data['success_message'] ='Successfully login'
-                    return JsonResponse(data,safe=False)
+                    data = {'success_message': 'Successfully login'}
+                    return JsonResponse(data, safe=False)
                 else:
-                    data={}
-                    data['error_message'] ='Invalid Credentials'
-                    return JsonResponse(data,safe=False)
+                    data = {'error_message': 'Invalid Credentials'}
+                    return JsonResponse(data, safe=False)
             else:
-                data={}
-                data['error_message'] ='Some field is empty'
-                return JsonResponse(data,safe=False)
+                data = {'error_message': 'Some field is empty'}
+                return JsonResponse(data, safe=False)
         else:
             return redirect('auth-login')
 
+
 # Registration
 class RegisterView(View):
-    def get(self,request):
-        greeting={}
-        greeting['form'] = UserRegistrationForm
+    def get(self, request):
+        greeting = {'form': UserRegistrationForm}
         auth.logout(request)
-        return render(request,'pages/authentication/auth-register.html',greeting)
-    def post(self,request):
+        return render(request, 'pages/authentication/auth-register.html', greeting)
+
+    def post(self, request):
         if request.method == "POST":
             email = request.POST.get('email')
             username = request.POST.get('username')
             password = request.POST.get('password1')
             password1 = request.POST.get('password2')
-            
-            if(email != '' and username != '' and password != '' and password1 != '' ):
+
+            if email != '' and username != '' and password != '' and password1 != '':
                 if User.objects.filter(username=username).exists():
-                    data={}
-                    data['error_message'] = 'Username Is Already Exists'
-                    return JsonResponse(data,safe=False)
+                    data = {'error_message': 'Username Is Already Exists'}
+                    return JsonResponse(data, safe=False)
                 elif User.objects.filter(email=email).exists():
-                    data={}
-                    data['error_message'] ='Email Is Already Exists'
-                    return JsonResponse(data,safe=False)
-                elif(password == password1):
+                    data = {'error_message': 'Email Is Already Exists'}
+                    return JsonResponse(data, safe=False)
+                elif password == password1:
                     form = UserRegistrationForm(request.POST)
                     if form.is_valid():
                         subject = "Welcome to Nazox  Membership"
@@ -85,19 +81,17 @@ class RegisterView(View):
                         }
                         email_1 = render_to_string(email_template_name, c)
                         send_mail(subject, email_1, 'nazox@nazox.com',
-                                [email], fail_silently=False)
+                                  [email], fail_silently=False)
                         user = User.objects.create_user(username=username, email=email, password=password)
                         user.save()
-                        data={'success_message' : "Successfully registered please login"}
-                        return JsonResponse(data,safe=False)
+                        data = {'success_message': "Successfully registered please login"}
+                        return JsonResponse(data, safe=False)
                 else:
-                    data={}
-                    data['error_message'] ='password and confirm password is not match'
-                    return JsonResponse(data,safe=False)
+                    data = {'error_message': 'password and confirm password is not match'}
+                    return JsonResponse(data, safe=False)
             else:
-                data={}
-                data['error_message'] ='Some field is empty'
-                return JsonResponse(data,safe=False)
+                data = {'error_message': 'Some field is empty'}
+                return JsonResponse(data, safe=False)
         else:
             return redirect('auth-login')
 
@@ -118,7 +112,7 @@ class RecoverPasswordView(View):
             if User.objects.filter(email=email).exists():
                 obj = User.objects.filter(email=email)
                 for i in obj:
-                    user_details = {'username':i.username }
+                    user_details = {'username': i.username}
                     username = user_details['username']
                 password_reset_form = RecoverPasswordForm(request.POST)
                 if password_reset_form.is_valid():
@@ -147,7 +141,8 @@ class RecoverPasswordView(View):
                                 return redirect('pages-recoverpw')
                             return redirect("password_reset_done")
                 password_reset_form = RecoverPasswordForm()
-                return render(request=request, template_name="more/authentication/auth-recoverpw.html", context={"password_reset_form": password_reset_form})
+                return render(request=request, template_name="more/authentication/auth-recoverpw.html",
+                              context={"password_reset_form": password_reset_form})
             else:
                 if email == "":
                     messages.info(request, 'Please Enter Your Email')
@@ -164,10 +159,12 @@ class ConfirmmailView(View):
     def get(self, request):
         return render(request, 'pages/authentication/auth-confirm-mail.html')
 
+
 #  Email Verification
 class EmailVerificationView(View):
     def get(self, request):
         return render(request, 'pages/authentication/auth-email-verification.html')
+
 
 #  Two Step Verification
 class TwoStepVerificationView(View):
@@ -176,48 +173,46 @@ class TwoStepVerificationView(View):
 
 
 # Lock-Screen
-class LockScreenView(LoginView,View):
+class LockScreenView(LoginView, View):
     def get(self, request):
-        if(self.username):
+        if self.username:
             greeting = {}
             username = self.username[0]
             greeting['heading'] = username
             greeting['form'] = LockScreenForm
-            return render(request, 'pages/authentication/auth-lock-screen.html',greeting)
+            return render(request, 'pages/authentication/auth-lock-screen.html', greeting)
         else:
             return redirect("auth-login")
-    def post (self, request):
+
+    def post(self, request):
         if request.method == "POST":
             password = request.POST['password']
 
-            if(self.username):
+            if self.username:
                 username = self.username[0]
 
-                p_len =len(username)
-                if(p_len<6):
+                p_len = len(username)
+                if p_len < 6:
                     user = auth.authenticate(username=username, password=password)
-                    if user is not None:    
+                    if user is not None:
                         request.session['username'] = username
                         auth.login(request, user)
-                        data={}
-                        data['success_message'] ='Successfully unlock-screen'
-                        return JsonResponse(data,safe=False)
+                        data = {'success_message': 'Successfully unlock-screen'}
+                        return JsonResponse(data, safe=False)
                     else:
-                        data={}
-                        data['error_message'] = 'invalid creditional'
-                        return JsonResponse(data,safe=False)
+                        data = {'error_message': 'invalid creditional'}
+                        return JsonResponse(data, safe=False)
                 else:
-                    data={}
-                    data['error_message'] = 'Password must be at least 6 characters'
-                    return JsonResponse(data,safe=False)
+                    data = {'error_message': 'Password must be at least 6 characters'}
+                    return JsonResponse(data, safe=False)
             else:
-                data={}
-                data['session_timeout'] = 'Time-out Please Login'
-                return JsonResponse(data,safe=False)        
+                data = {'session_timeout': 'Time-out Please Login'}
+                return JsonResponse(data, safe=False)
         else:
             return redirect('auth-lock-screen')
+
 
 # Logout
 def logout(request):
     auth.logout(request)
-    return render(request,'pages/authentication/auth-logout-done.html')
+    return render(request, 'pages/authentication/auth-logout-done.html')
