@@ -1,4 +1,4 @@
-Nazox Installation in Django Python
+Timelock Installation in Django Python
 
 >>>Installation Python
  ->https://www.python.org/downloads/

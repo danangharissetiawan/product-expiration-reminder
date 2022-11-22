@@ -20,7 +20,7 @@ class LoginView(View):
 
     def get(self, request):
         if 'username' in request.session:
-            return redirect('dashboard')
+            return redirect('dashboard:home')
         else:
             greeting = {'form': UserLoginForm}
             return render(request, 'pages/authentication/auth-login.html', greeting)
@@ -73,7 +73,7 @@ class RegisterView(View):
                 elif password == password1:
                     form = UserRegistrationForm(request.POST)
                     if form.is_valid():
-                        subject = "Welcome to Nazox  Membership"
+                        subject = "Welcome to Timelock  Membership"
                         email_template_name = "pages/authentication/register-email.txt"
                         c = {
                             'username': username,
@@ -102,7 +102,7 @@ class RecoverPasswordView(View):
 
     def get(self, request):
         if 'username' in request.session:
-            return redirect('dashboard')
+            return redirect('dashboard:home')
         else:
             return render(request, self.template_name, {'form': RecoverPasswordForm})
 
