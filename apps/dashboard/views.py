@@ -9,5 +9,5 @@ class DashboardView(LoginRequiredMixin,View):
         print(request.session)
         greeting = {}
         greeting['title'] = "Dashboard"
-        greeting['pageview'] = "Nazox"        
+        greeting['pageview'] = "Timelock"
         return render(request, 'menu/index.html',greeting)

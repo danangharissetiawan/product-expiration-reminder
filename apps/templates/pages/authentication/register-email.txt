@@ -2,7 +2,7 @@
 
 Dear {{username}},
 
-I want to thank you for being a loyal Nazox customer. As one of our first clients, you helped our company get off the ground. It was a real pleasure helping you bring your vision to life in what was then your new home.
+I want to thank you for being a loyal Timelock customer. As one of our first clients, you helped our company get off the ground. It was a real pleasure helping you bring your vision to life in what was then your new home.
 
 Since then, we’ve worked together on numerous home renovation and design projects, and I’m always excited when I see that you’ve emailed with ideas.
 
@@ -15,7 +15,7 @@ Your Password is : {{password}}
 
 Sincerely yours,
 
-Nazox Team.
+Timelock Team.
 
 
 {% endautoescape %}

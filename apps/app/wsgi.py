@@ -1,5 +1,5 @@
 """
-WSGI config for nazox project.
+WSGI config for Timelock project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
