@@ -138,7 +138,7 @@ File: Main Css File
   display: inline-block;
   height: 6px;
   width: 6px;
-  background-color: #ff3d60;
+  background-color: #3db8ff;
   border-radius: 50%;
   top: 20px;
   left: 14px; }
@@ -1332,8 +1332,8 @@ body[data-layout="horizontal"][data-layout-size="boxed"] .container-fluid, body[
     margin-top: 24px; }
     .icon-demo-content .col-lg-4:hover i {
       color: #fff;
-      background-color: #5664d2;
-      border-color: #5664d2; }
+      background-color: #f4f4f4;
+      border-color: #f6f6fa; }
 
 .grid-structure .grid-container {
   background-color: #f8f9fa;
