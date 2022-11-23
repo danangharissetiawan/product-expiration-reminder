@@ -14,7 +14,7 @@ SECRET_KEY = 'iw@m4xnf4))^gf-d_g5w*b(e!er78!6=$5p8n@77mg(&^r7a99'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -116,6 +116,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 STATIC_ROOT = os.path.join(BASE_DIR,'assets')
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
 # message
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
@@ -146,3 +149,6 @@ SESSION_EXPIRE_SECONDS = 1000  # 3 minute
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY_GRACE_PERIOD = 1 # group by minute 
 SESSION_TIMEOUT_REDIRECT = 'auth-lock-screen'
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+

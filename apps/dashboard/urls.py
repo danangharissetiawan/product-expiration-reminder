@@ -8,6 +8,8 @@ app_name = 'dashboard'
 
 urlpatterns = [
     path("", views.DashboardView.as_view(), name="home"),
+    path("barcode/", views.detect, name="barcode"),
+    path("camera_feed/", views.camera_feed, name="camera_feed"),
     path("list-prducts/", TemplateView.as_view(template_name="pages/dashboard/products/list_products.html"), name="list-products"),
     path("edit-product/", TemplateView.as_view(template_name="pages/dashboard/products/edit_product.html"), name="edit-product"),
 ]
