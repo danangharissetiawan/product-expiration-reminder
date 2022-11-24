@@ -26,28 +26,37 @@
 						</li>
 						<li>
 							<a href="javascript: void(0);" class="has-arrow waves-effect"> <i class="ri-store-2-line"></i>
-								<span key="t-ecommerce">Ecommerce</span>
+								<span key="t-product">Product</span>
 							</a>
 							<ul class="sub-menu" aria-expanded="false">
-								<li><a href="#"key="t-products">Products</a>
+								<li><a href="#"key="t-daftar-products">Daftar Products</a>
+									<ul class="sub-menu" aria-expanded="false">
+										<li><a href="#" key="t-basic-tables" >Basic Tables</a>
+										</li>
+										<li><a href="#" key="t-data-tables" >Data Tables</a>
+										</li>
+										<li><a href="#" key="t-responsive-table" >Responsive Table</a>
+										</li>
+										<li><a href="#" key="t-editable-table" >Editable Table</a>
+										</li>
+									</ul>
 								</li>
-								<li><a href="#"key="t-product-detail">Product Detail</a>
-								</li>
-								<li><a href="#"key="t-orders">Orders</a>
-								</li>
-								<li><a href="#"key="t-customers">Customers</a>
-								</li>
-								<li><a href="#"key="t-cart">Cart</a>
-								</li>
-								<li><a href="#"key="t-checkout">key=Checkout</a>
-								</li>
-								<li><a href="#"key="t-shops">Shops</a>
-								</li>
-								<li><a href="#"key="t-add-product">Add Product</a>
+								<li><a href="#"key="t-edit-product">Edit Product</a>
+									<ul class="sub-menu" aria-expanded="false">
+										<li><a href="#" key="t-form-elements" >Form Elements</a>
+										</li>
+										<li><a href="#" key="t-form-validation" >Form Validation</a>
+										</li>
+										<li><a href="#" key="t-form-advanced" >Form Advanced</a>
+										</li>
+										<li><a href="#" key="t-form-editors" >Form Editors</a>
+										</li>
+										<li><a href="#" key="t-form-upload" >Form File Upload</a>
+										</li>
+		
+									</ul>
 								</li>
 							</ul>
-						</li>
-						<li>
 							<a href="javascript: void(0);" class="has-arrow waves-effect"> <i class="ri-mail-send-line"></i>
 								<span key="t-email">Email</span>
 							</a>
@@ -57,53 +66,17 @@
 								<li><a href="#" key="t-read-email">Read Email</a>
 								</li>
 							</ul>
-						</li>
-						<li>
-							<a href="#" class=" waves-effect"> <i class="ri-artboard-2-line"></i>
-								<span key="t-kanban-board">Kanban Board</span>
-							</a>
-						</li>
-						<li>
-							<a href="javascript: void(0);" class="has-arrow waves-effect"> <i class="ri-layout-3-line"></i>
-								<span key="t-layouts">Layouts</span>
-							</a>
-							<ul class="sub-menu" aria-expanded="true">
-								<li> <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Vertical</a>
-									<ul class="sub-menu" aria-expanded="true">
-										<li><a href="{% url 'layouts-light-sidebar' %}" key="t-light-sidebar">Light Sidebar</a>
-										</li>
-										<li><a href="{% url 'layouts-compact-sidebar' %}" key="t-compact-sidebar" >Compact Sidebar</a>
-										</li>
-										<li><a href="{% url 'layouts-icon-sidebar' %}" key="t-icon-sidebar">Icon Sidebar</a>
-										</li>
-										<li><a href="{% url 'layouts-boxed' %}" key="t-boxed-width">Boxed Layout</a>
-										</li>
-										<li><a href="{% url 'layouts-preloader' %}" key ="t-preloader">Preloader</a>
-										</li>
-										<li><a href="{% url 'layouts-colored-sidebar' %}" key="t-colored-sidebar">Colored Sidebar</a>
-										</li>
-										{% comment %} <li><a href="{% url 'layouts-scrollable' %}" key="t-scrollable" >Scrollable</a>
-										</li> {% endcomment %}
-									</ul>
-								</li>
-								<li> <a href="javascript: void(0);" class="has-arrow" key="t-horizontal">Horizontal</a>
-									<ul class="sub-menu" aria-expanded="true">
-										<li><a href="{% url 'layouts-horizontal' %}" key="t-horizontal">Horizontal</a>
-										</li>
-										<li><a href="{% url 'layouts-hori-topbar-light' %}" key="t-topbar-light">Topbar light</a>
-										</li>
-										<li><a href="{% url 'layouts-hori-boxed-width' %}"key="t-boxed-width">Boxed width</a>
-										</li>
-										<li><a href="{% url 'layouts-hori-preloader' %}" key ="t-preloader">Preloader</a>
-										</li>
-										<li><a href="{% url 'layouts-colored-header' %}" key="t-colored-topbar" >Colored Header</a>
-										</li>
-										</li>
-										{% comment %} <li><a href="{% url 'layouts-hori-scrollable' %}" key="t-scrollable">Scrollable</a>
-										</li> {% endcomment %}
-									</ul>
-								</li>
-							</ul>
+							<li>
+								<a href="javascript: void(0);" class="has-arrow waves-effect"> <i class="ri-store-2-line"></i>
+									<span key="t-data-barcode">Data Barcode</span>
+								</a>
+								<ul class="sub-menu" aria-expanded="false">
+									<li><a href="#"key="t-list-barcode">List Barcode</a>
+									</li>
+									<li><a href="#"key="t-add-barcode">Add Barcode</a>
+									</li>
+								</ul>
+
 						</li>
 						<li class="menu-title" key="t-pages">Pages</li>
 						<li>
@@ -126,79 +99,10 @@
 								<li><a href="{% url 'auth-two-step-verification' %}" key="t-two-step-verification" >Two Step Verification</a>
 								</li>
 							</ul>
-						</li>
-						<li>
-							<a href="javascript: void(0);" class="has-arrow waves-effect" key= > <i class="ri-profile-line"></i>
-								<span key="t-utility">Utility</span>
-							</a>
-							<ul class="sub-menu" aria-expanded="false">
-								<li><a href="#" key="t-starter-page" >Starter Page</a>
-								</li>
-								<li><a href="#" key="t-maintenance" >Maintenance</a>
-								</li>
-								<li><a href="#" key="t-coming-soon" >Coming Soon</a>
-								</li>
-								<li><a href="#" key="t-timeline" >Timeline</a>
-								</li>
-								<li><a href="#" key="t-faqs" >FAQs</a>
-								</li>
-								<li><a href="#" key="t-pricing" >Pricing</a>
-								</li>
-								<li><a href="#" key="t-error-404" >Error 404</a>
-								</li>
-								<li><a href="#" key="t-error-500" >Error 500</a>
-								</li>
-							</ul>
-						</li>
+
 						<li class="menu-title" key="t-components">Components</li>
 						<li>
-							<a href="javascript: void(0);" class="has-arrow waves-effect"> <i class="ri-pencil-ruler-2-line"></i>
-								<span key="t-ui-elements" >UI Elements</span>
-							</a>
-							<ul class="sub-menu" aria-expanded="false">
-								<li><a href="#" key="t-alerts" >Alerts</a>
-								</li>
-							<li><a href="#" key="t-buttons" >Buttons</a>
-								</li>
-							<li><a href="#" key="t-cards" >Cards</a>
-								</li>
-							<li><a href="#" key="t-carousel" >Carousel</a>
-								</li>
-							<li><a href="#" key="t-dropdowns" >Dropdowns</a>
-								</li>
-							<li><a href="#" key="t-grid" >Grid</a>
-								</li>
-							<li><a href="#" key="t-images" >Images</a>
-								</li>
-							<li><a href="#" key="t-lightbox" >Lightbox</a>
-								</li>
-							<li><a href="%}" key="t-modals" >Modals</a>
-								</li>
-							<li><a href="#" key="t-offcanvas" >Offcanvas</a>
-								</li>
-							<li><a href="#" key="t-range-slider" >Range Slider</a>
-								</li>
-							<li><a href="#" key="t-round-slider" >Round Slider</a>
-								</li>
-							<li><a href="#" key="t-session-timeout" >Session Timeout</a>
-								</li>
-							<li><a href="#" key="t-progress-bars" >Progress Bars</a>
-								</li>
-							<li><a href="#" key="t-sweet-alert" >Sweetalert 2</a>
-								</li>
-							<li><a href="#" key="t-tabs-accordions" >Tabs & Accordions</a>
-								</li>
-							<li><a href="#" key="t-typography" >Typography</a>
-								</li>
-							<li><a href="#" key="t-video" >Video</a>
-								</li>
-							<li><a href="#" key="t-general" >General</a>
-								</li>
-							<li><a href="#" key="t-rating" >Rating</a>
-								</li>
-							<li><a href="#" key="t-notifications" >Notifications</a>
-								</li>
-							</ul>
+
 						</li>
 						<li>
 						<a href="javascript: void(0);" class="waves-effect"> <i class="ri-eraser-fill"></i>
@@ -216,12 +120,7 @@
 								</li>
 								<li><a href="#" key="t-form-upload" >Form File Upload</a>
 								</li>
-								<li><a href="#" key="t-form-xeditable" >Form X-editable</a>
-								</li>
-								<li><a href="#" key="t-form-wizard" >Form Wizard</a>
-								</li>
-								<li><a href="#" key="t-form-mask" >Form Mask</a>
-								</li>
+
 							</ul>
 						</li>
 						<li>
@@ -255,7 +154,9 @@
 								<li><a href="#" key="t-sparkline-charts" >Sparkline Charts</a>
 								</li>
 							</ul>
-						</li>
+
+
+					</ul>
 				</div>
 				<!-- Sidebar -->
 			</div>
