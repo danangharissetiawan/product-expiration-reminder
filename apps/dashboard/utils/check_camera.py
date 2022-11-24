@@ -1,5 +1,6 @@
 import cv2
 
+
 def return_camera_indexes():
     # checks the first 10 indexes.
     index = 0
@@ -13,5 +14,6 @@ def return_camera_indexes():
         index += 1
         i -= 1
     return arr
+
 
 print('Available camera indexes:', return_camera_indexes())
