@@ -1,0 +1,115 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <!-- twitter-bootstrap-wizard css -->
+    <link rel="stylesheet" href="{% static 'libs/twitter-bootstrap-wizard/prettify.css' %}">
+
+    <!-- select2 css -->
+    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <!-- dropzone css -->
+    <link href="{% static 'libs/dropzone/min/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock extra_css %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div id="addproduct-nav-pills-wizard" class="twitter-bs-wizard">
+                        <ul class="twitter-bs-wizard-nav">
+                            <li class="nav-item">
+                                <a href="#barcode-scanner" class="nav-link" data-toggle="tab">
+                                    <span class="step-number">01</span>
+                                    <span class="step-title">Scan Barcode</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#product-img" class="nav-link" data-toggle="tab">
+                                    <span class="step-number">02</span>
+                                    <span class="step-title">Product Img</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content twitter-bs-wizard-tab-content">
+                            <div class="tab-pane" id="barcode-scanner">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                    <h4 class="card-title">Scan Barcode</h4>
+                                    <p class="card-title-desc">Scan barcode anda</p>
+                                    {% if cam_status %}
+                                    <h4>Camera stream status: connected</h4>
+                                    <img src="{% url 'dashboard:camera_feed' %}" style="width: 640px; height: 480px;" />
+                                    {% else %}
+                                        <div class="alert alert-danger" role="alert">
+                                            Camera stream status: Camera is either not accessible or busy
+                                        </div>
+                                        <div class="alert alert-warning" role="alert">
+                                            <b>Things to check:</b>
+                                            <ul class="text-right list-inline">
+                                                <li>USB connection?</li>
+                                                <li>Camera is already in use?</li>
+                                            </ul>
+                                        </div>
+
+                                    {% endif %}
+                                </div>
+                                <div class="col-lg-6">
+                                    <h4 class="card-title">Information</h4>
+                                    <p class="card-title-desc">Barcode Information</p>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="price">Barcode</label>
+                                        <input id="barcode" name="barcode" type="text" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane" id="product-img">
+                                <h4 class="card-title">Basic Information</h4>
+                                <p class="card-title-desc">Fill all information below</p>
+
+                                <form>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="productname">Product Name</label>
+                                        <input id="productname" name="productname" type="text" class="form-control">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="productdesc">Product Description</label>
+                                        <textarea class="form-control" id="productdesc" rows="5"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                        <ul class="pager wizard twitter-bs-wizard-pager-link">
+                            <li class="previous"><a href="#">Previous</a></li>
+                            <li class="next"><a href="#">Next</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+{% endblock content %}
+
+{% block extra_javascript %}
+    <!-- twitter-bootstrap-wizard js -->
+    <script src="{% static 'libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js' %}"></script>
+
+    <script src="{% static 'libs/twitter-bootstrap-wizard/prettify.js' %}"></script>
+
+    <!-- select 2 plugin -->
+    <script src="{% static 'libs/select2/js/select2.min.js' %}"></script>
+
+    <!-- dropzone plugin -->
+    <script src="{% static 'libs/dropzone/min/dropzone.min.js' %}"></script>
+
+    <!-- init js -->
+    <script src="{% static 'js/pages/ecommerce-add-product.init.js' %}"></script>
+
+{% endblock extra_javascript %}
