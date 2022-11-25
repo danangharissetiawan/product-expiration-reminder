@@ -41,17 +41,11 @@
 										</li>
 									</ul>
 								</li>
-								<li><a href="#"key="t-edit-product">Edit Product</a>
+								<li><a href="#"key="t-edit-product">Add Product</a>
 									<ul class="sub-menu" aria-expanded="false">
-										<li><a href="#" key="t-form-elements" >Form Elements</a>
+										<li><a href="{% url "dashboard:add-product-kemasan" %}" key="t-form-elements" >Kemasan Product</a>
 										</li>
-										<li><a href="#" key="t-form-validation" >Form Validation</a>
-										</li>
-										<li><a href="#" key="t-form-advanced" >Form Advanced</a>
-										</li>
-										<li><a href="#" key="t-form-editors" >Form Editors</a>
-										</li>
-										<li><a href="#" key="t-form-upload" >Form File Upload</a>
+										<li><a href="#" key="t-form-upload" >Non Kemasan Product</a>
 										</li>
 		
 									</ul>
@@ -67,13 +61,13 @@
 								</li>
 							</ul>
 							<li>
-								<a href="javascript: void(0);" class="has-arrow waves-effect"> <i class="ri-store-2-line"></i>
+								<a href="javascript: void(0);" class="has-arrow waves-effect"> <i class="ri-database-2-line"></i>
 									<span key="t-data-barcode">Data Barcode</span>
 								</a>
 								<ul class="sub-menu" aria-expanded="false">
 									<li><a href="#"key="t-list-barcode">List Barcode</a>
 									</li>
-									<li><a href="#"key="t-add-barcode">Add Barcode</a>
+									<li><a href="{% url "dashboard:add-barcode" %}" key="t-add-barcode">Add Barcode</a>
 									</li>
 								</ul>
 
