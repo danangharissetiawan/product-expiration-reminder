@@ -26,6 +26,7 @@
 						</li>
 						<li>
 							<a href="javascript: void(0);" class="has-arrow waves-effect"> <i class="ri-store-2-line"></i>
+<<<<<<< HEAD
 								<span key="t-ecommerce">Product</span>
 							</a>
 							<ul class="sub-menu" aria-expanded="false">
@@ -71,39 +72,24 @@
 								<li> <a href="javascript: void(0);" class="has-arrow" key="t-vertical">Vertical</a>
 									<ul class="sub-menu" aria-expanded="true">
 										<li><a href="{% url 'layouts-light-sidebar' %}" key="t-light-sidebar">Light Sidebar</a>
-										</li>
-										<li><a href="{% url 'layouts-compact-sidebar' %}" key="t-compact-sidebar" >Compact Sidebar</a>
-										</li>
-										<li><a href="{% url 'layouts-icon-sidebar' %}" key="t-icon-sidebar">Icon Sidebar</a>
-										</li>
-										<li><a href="{% url 'layouts-boxed' %}" key="t-boxed-width">Boxed Layout</a>
-										</li>
-										<li><a href="{% url 'layouts-preloader' %}" key ="t-preloader">Preloader</a>
-										</li>
-										<li><a href="{% url 'layouts-colored-sidebar' %}" key="t-colored-sidebar">Colored Sidebar</a>
-										</li>
-										{% comment %} <li><a href="{% url 'layouts-scrollable' %}" key="t-scrollable" >Scrollable</a>
-										</li> {% endcomment %}
-									</ul>
+=======
+								<span key="t-product">Product</span>
+							</a>
+							<ul class="sub-menu" aria-expanded="false">
+								<li><a href="#">Daftar Products</a>
 								</li>
-								<li> <a href="javascript: void(0);" class="has-arrow" key="t-horizontal">Horizontal</a>
-									<ul class="sub-menu" aria-expanded="true">
-										<li><a href="{% url 'layouts-horizontal' %}" key="t-horizontal">Horizontal</a>
+								<li><a href="#"key="t-edit-product" class="has-arrow waves-effect">Add Product</a>
+									<ul class="sub-menu" aria-expanded="false">
+										<li><a href="{% url "dashboard:add-product-kemasan" %}" key="t-form-elements" >Kemasan Product</a>
+>>>>>>> a86cf4855e5984bb8d39e3d5f2e2a08e11a6c43a
 										</li>
-										<li><a href="{% url 'layouts-hori-topbar-light' %}" key="t-topbar-light">Topbar light</a>
+										<li><a href="#" key="t-form-upload" >Non Kemasan Product</a>
 										</li>
-										<li><a href="{% url 'layouts-hori-boxed-width' %}"key="t-boxed-width">Boxed width</a>
-										</li>
-										<li><a href="{% url 'layouts-hori-preloader' %}" key ="t-preloader">Preloader</a>
-										</li>
-										<li><a href="{% url 'layouts-colored-header' %}" key="t-colored-topbar" >Colored Header</a>
-										</li>
-										</li>
-										{% comment %} <li><a href="{% url 'layouts-hori-scrollable' %}" key="t-scrollable">Scrollable</a>
-										</li> {% endcomment %}
+		
 									</ul>
 								</li>
 							</ul>
+<<<<<<< HEAD
 						</li>
 						<li class="menu-title" key="t-pages">Pages</li>
 						<li>
@@ -256,6 +242,32 @@
 								</li>
 							</ul>
 						</li>
+=======
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect"> <i class="ri-mail-send-line"></i>
+                                <span key="t-email">Email</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="#" key="t-inbox">Inbox</a>
+                                </li>
+                                <li><a href="#" key="t-read-email">Read Email</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect"> <i class="ri-database-2-line"></i>
+                                <span key="t-data-barcode">Data Barcode</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url "dashboard:list-barcode" %}"key="t-list-barcode">List Barcode</a>
+                                </li>
+                                <li><a href="{% url "dashboard:add-barcode" %}" key="t-add-barcode">Add Barcode</a>
+                                </li>
+                            </ul>
+                        </li>
+					</ul>
+>>>>>>> a86cf4855e5984bb8d39e3d5f2e2a08e11a6c43a
 				</div>
 				<!-- Sidebar -->
 			</div>

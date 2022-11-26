@@ -1,8 +1,10 @@
 from django.http import request, StreamingHttpResponse, JsonResponse
-from django.shortcuts import redirect, render
-from django.views import View   
+from django.shortcuts import redirect, render, reverse
+from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from . import barcode_reader as br
+from django.views.generic import ListView
+from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
+from . import models
 import os
 import time
 from datetime import datetime
@@ -30,6 +32,9 @@ def camera_feed(request):
 
     # if ajax request is sent
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        barcode_data = None
+        file_saved_at = None
+        barcode_name = ''
         print('Ajax request received')
         time_stamp = str(datetime.now().strftime("%d-%m-%y"))
         image = os.path.join(os.getcwd(), "media",
@@ -43,7 +48,11 @@ def camera_feed(request):
                     barcode_data = (barcode.data).decode('utf-8')
                     file_saved_at = time.ctime(os.path.getmtime(image))
                     # return decoded barcode as json response
-                    return JsonResponse(data={'barcode_data': barcode_data, 'file_saved_at': file_saved_at})
+
+                if models.Barcode.objects.filter(barcode=str(barcode_data)).exists():
+                    barcode_name = models.Barcode.objects.filter(barcode=str(barcode_data)).first()
+                    return JsonResponse(data={'barcode_data': barcode_data, 'file_saved_at': file_saved_at, 'barcode_name': barcode_name.name})
+                return JsonResponse(data={'barcode_data': barcode_data, 'file_saved_at': file_saved_at, 'barcode_name': barcode_name})
             else:
                 return JsonResponse(data={'barcode_data': None})
         else:
@@ -53,15 +62,67 @@ def camera_feed(request):
         return StreamingHttpResponse(frames, content_type='multipart/x-mixed-replace; boundary=frame')
 
 
-def detect(request):
+def add_barcode(request):
+    # stream = CameraStreamingWidget()
+    # success, frame = stream.camera.read()
+    # if success:
+    #     status = True
+    # else:
+    #     status = False
+    status = open_camera()
+    return render(request, 'pages/dashboard/barcode/add_barcode.html', context={'cam_status': status})
+
+
+def open_camera():
     stream = CameraStreamingWidget()
     success, frame = stream.camera.read()
     if success:
         status = True
     else:
         status = False
-    return render(request, 'pages/dashboard/barcode.html', context={'cam_status': status})
+    return status
 
 
+def add_product_kemasan(request):
+    status = open_camera()
+    return render(request, 'pages/dashboard/products/add_product_kemasan.html', context={'cam_status': status})
 
+
+class BarcodeListView(LoginRequiredMixin, ListView):
+    model = models.Barcode
+    template_name = 'pages/dashboard/barcode/list_barcode.html'
+    context_object_name = 'barcodes'
+    ordering = ['name']
+    paginate_by = 1000
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'List Barcode'
+        context['pageview'] = 'Barcode'
+        return context
+
+
+class BarcodeCreateView(LoginRequiredMixin, CreateView):
+    model = models.Barcode
+    fields = '__all__'
+    template_name = 'pages/dashboard/barcode/add_barcode.html'
+
+    def get_success_url(self):
+        return reverse('dashboard:list-barcode')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        status = open_camera()
+        context['cam_status'] = status
+        context['pageview'] = "Timelock"
+        context['title'] = "Add Barcode"
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
