@@ -5,9 +5,9 @@ import playsound
 
 class BarcodeReader:
     def __init__(self):
-        self.camera = cv2.VideoCapture(0)
-        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        self.camera = cv2.VideoCapture(1)
+        # self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        # self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
     def read(self):
         _, frame = self.camera.read()
@@ -54,7 +54,7 @@ class IPWebcamBarcodeReader:
 
 class VideoCamera(object):
     def __init__(self):
-        self.video = cv2.VideoCapture(0)
+        self.video = cv2.VideoCapture()
 
     def __del__(self):
         self.video.release()
