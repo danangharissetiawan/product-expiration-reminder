@@ -54,7 +54,7 @@ class IPWebcamBarcodeReader:
 
 class VideoCamera(object):
     def __init__(self):
-        self.video = cv2.VideoCapture(0)
+        self.video = cv2.VideoCapture()
 
     def __del__(self):
         self.video.release()
