@@ -29,13 +29,13 @@
 								<span key="t-product">Product</span>
 							</a>
 							<ul class="sub-menu" aria-expanded="false">
-								<li><a href="#">Daftar Products</a>
+								<li><a href="{% url "dashboard:list-products" %}">Daftar Products</a>
 								</li>
 								<li><a href="#"key="t-edit-product" class="has-arrow waves-effect">Add Product</a>
 									<ul class="sub-menu" aria-expanded="false">
 										<li><a href="{% url "dashboard:add-product-kemasan" %}" key="t-form-elements" >Kemasan Product</a>
 										</li>
-										<li><a href="#" key="t-form-upload" >Non Kemasan Product</a>
+										<li><a href="{% url "dashboard:add-product-non-kemasan" %}" key="t-form-upload" >Non Kemasan Product</a>
 										</li>
 
 									</ul>
