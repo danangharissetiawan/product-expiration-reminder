@@ -14,22 +14,10 @@ class ProductPackagingForm(forms.ModelForm):
         exclude = ['user', 'slug', 'date_added', 'label', 'barcode']
 
 
+class ProductNonPackagingForm(forms.ModelForm):
+    class Meta:
+        model = ProductNonPackaging
+        fields = ['name', 'description', 'category', 'quality']
+        exclude = ['user', 'slug', 'date_added', 'label', 'expiry_date']
 
-
-    # def clean_barcode(self):
-    #     barcode = "8998989110129"
-    #     if not Barcode.objects.filter(barcode=barcode).exists():
-    #         raise forms.ValidationError("Barcode tidak terdaftar")
-    #     else:
-    #         barcode = Barcode.objects.get(barcode=barcode).first()
-    #         return barcode
-    #
-    # def save(self, **kwargs):
-    #     slug_str = f"{kwargs['name']}-{kwargs['expiry_date']}"
-    #     print(self.barcode)
-    #     self.barcode = self.clean_barcode()
-    #     self.label = label_expiry_date(kwargs['expiry_date'])
-    #     self.slug = slugify(slug_str)
-    #
-    #     super().save(**kwargs)
 

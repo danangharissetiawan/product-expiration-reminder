@@ -14,10 +14,10 @@
                 <div class="card-body  pt-0">
                     <ul class="nav nav-tabs nav-tabs-custom mb-4">
                         <li class="nav-item">
-                            <a class="nav-link fw-bold p-3 active" href="#">Kemasan Product</a>
+                            <a class="nav-link fw-bold p-3" href="{% url "dashboard:list-products" %}">Kemasan Product</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link p-3 fw-bold" href="{% url "dashboard:list-products-nonkemasan" %}">Non Kemasan Product</a>
+                            <a class="nav-link p-3 fw-bold active" href="#">Non Kemasan Product</a>
                         </li>
                     </ul>
                     <div class="table-responsive">
@@ -30,9 +30,9 @@
                                             <label class="form-check-label mb-0" for="checkboxall">&nbsp;</label>
                                         </div>
                                     </th>
-                                    <th>Barcode</th>
                                     <th>Name</th>
                                     <th>Category</th>
+                                    <th>Quality</th>
                                     <th>Expired Date</th>
                                     <th>Label</th>
                                     <th style="width: 120px;">Action</th>
@@ -48,8 +48,6 @@
                                         </div>
                                     </td>
 
-                                    <td><a href="javascript: void(0);" class="text-dark fw-bold">{{ product.barcode.barcode }}</a> </td>
-
                                     <td>{{ product.name }}</td>
 
                                     <td>{{ product.get_category_display }}</td>
@@ -58,12 +56,14 @@
                                         {{ product.expiry_date }}
                                     </td>
 
+                                    <td><a href="javascript: void(0);" class="text-dark fw-bold">{{ product.get_quality_display }}</a> </td>
+
                                     <td>
                                         <div class="badge badge-soft-{% if product.label == "W" %}warning{% elif product.label == "D" %}danger{% else %}success{% endif %} font-size-12">{{ product.get_label_display }}</div>
                                     </td>
 
                                     <td>
-                                        <a href="{% url "dashboard:edit-product_kemasan" product.id %}" class="me-3 text-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="mdi mdi-pencil font-size-18"></i></a>
+                                        <a href="javascript:void(0);" class="me-3 text-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="mdi mdi-pencil font-size-18"></i></a>
                                         <a href="javascript:void(0);" class="text-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="mdi mdi-trash-can font-size-18"></i></a>
                                     </td>
                                 </tr>

@@ -1,5 +1,6 @@
 {% extends "partials/base.html" %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block extra_css %}
     <!-- twitter-bootstrap-wizard css -->
@@ -45,8 +46,9 @@
                                                 <div class="mb-3">
                                                     <label for="category" id="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
                                                     <select class="form-control select2" name="{{ form.category.name }}" id="{{ form.category.id_for_label }}">
+
                                                         {% for x, y in form.fields.category.choices %}
-                                                        <option value="{{ x }}" {% if form.fields.category.value == x %} selected{% endif %}>{{ y }}</option>
+                                                        <option value="{{ x }}" {% if form.fields.category.value == x or object.category == x %} selected{% endif %}>{{ y }}</option>
                                                         {% endfor %}
                                                     </select>
                                                     {% if form.category.errors %}
@@ -63,7 +65,7 @@
                                                     <label class="form-label" id="{{ form.expiry_date.id_for_label }}">{{ form.expiry_date.label }}</label>
                                                     <div class="input-group" id="{{ form.expiry_date.id_for_label }}">
                                                         <input type="text" class="form-control" name="{{ form.expiry_date.name }}" placeholder="dd M, yyyy"
-                                                            data-date-format="dd M, yyyy" data-date-container='#{{ form.expiry_date.id_for_label }}' data-provide="datepicker">
+                                                            data-date-format="dd M, yyyy" data-date-container='#{{ form.expiry_date.id_for_label }}' value="{{ object.expiry_date|date:"d M, Y" }}" data-provide="datepicker">
 
                                                         <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                                     </div><!-- input-group -->
@@ -87,7 +89,7 @@
 
                                                 <div class="mb-3">
                                                     <label class="form-label" for="{{ form.barcode_input.id_for_label }}">{{ form.barcode_input.label }}</label>
-                                                    <input id="{{ form.barcode_input.id_for_label }}" name="{{ form.barcode_input.name }}" type="text" class="form-control">
+                                                    <input id="{{ form.barcode_input.id_for_label }}" name="{{ form.barcode_input.name }}" value="{{ object.barcode.barcode }}" type="text" class="form-control">
                                                     {% if form.barcode_input.errors %}
                                                         {% for error in form.name.errors %}
                                                             <div class="alert alert-danger mt-3" role="alert">
@@ -102,7 +104,7 @@
 
                                                 <div class="mb-3">
                                                     <label class="form-label" for="{{ form.name.id_for_label }}">Product Name</label>
-                                                    <input id="{{ form.name.id_for_label }}" name="{{ form.name.name }}" type="text" class="form-control">
+                                                    <input id="{{ form.name.id_for_label }}" name="{{ form.name.name }}" value="{{ object.name }}" type="text" class="form-control">
                                                     {% if form.name.errors %}
                                                         {% for error in form.name.errors %}
                                                             <div class="alert alert-danger mt-3" role="alert">
@@ -138,6 +140,7 @@
                                 <a class="btn btn-outline-warning" href="#">Back</a>
                                 <li class="next"><button class="btn btn-outline-info" href="#">Submit</button></li>
                             </ul>
+
                         </form>
 
                     </div>
