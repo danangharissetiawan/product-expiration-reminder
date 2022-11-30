@@ -12,11 +12,23 @@
     <!-- dropzone css -->
     <link href="{% static 'libs/dropzone/min/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
 
-        <link href="{% static 'libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+    <link href="{% static 'libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'libs/toastr/build/toastr.min.css' %}">
 
 {% endblock extra_css %}
 
 {% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message|safe }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -31,7 +43,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <form action="" method="post">
+                        <form action="" method="post" id="fromProductKemasan">
                             {% csrf_token %}
                             <div class="tab-content twitter-bs-wizard-tab-content">
                                 {% for error in form.errors %}
@@ -122,7 +134,11 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="{{ form.description.id_for_label }}">Product Description (Optional)</label>
-                                            <textarea class="form-control" id="{{ form.description.id_for_label }}" name="{{ form.description.name }}" rows="5"></textarea>
+                                            <textarea class="form-control" id="{{ form.description.id_for_label }}" name="{{ form.description.name }}" rows="5">
+                                                {% if object %}
+                                                    {{ object.description }}
+                                                {% endif %}
+                                            </textarea>
                                             {% if form.description.errors %}
                                                 {% for error in form.description.errors %}
                                                     <div class="alert alert-danger mt-3" role="alert">
@@ -166,10 +182,72 @@
     <!-- init js -->
     <script src="{% static 'js/pages/ecommerce-add-product.init.js' %}"></script>
 
-        <script src="{% static 'libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+
+    <!-- toastr plugin -->
+    <script src="{% static 'libs/toastr/build/toastr.min.js' %}"></script>
+
+    <!-- toastr init -->
+    <script src="{% static 'js/pages/toastr.init.js' %}"></script>
 
 
     <script>
+    function success_redirect() {
+        window.location.href = "{% url 'dashboard:list-products' %}";
+    }
+
+    $("form#fromProductKemasan").submit(function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function(data) {
+                toastr.success('{% if object %}Product Updated Successfully{% else %}Product Added Successfully{% endif %}', 'Success', {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
+                setTimeout(success_redirect, 2000);
+            },
+            error: function(data) {
+                console.log(data);
+                toastr.error('Product Update Failed', 'Error', {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
+            }
+        });
+    });
+
+
     $("#btn_ReadQRCode").on("click", function (e) {
         console.log("Ajax request triggered.");
         e.preventDefault();
