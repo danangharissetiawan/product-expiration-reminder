@@ -1,5 +1,7 @@
+from django.contrib import messages
 from django.http import request, StreamingHttpResponse, JsonResponse, HttpResponse
 from django.shortcuts import redirect, render, reverse
+from django.urls import reverse_lazy
 from django.utils.text import slugify
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -21,13 +23,30 @@ from .utils.management import label_expiry_date, ExpiryDateManage
 # from utils.camera_streaming import CameraStreamingWidget
 
 
-class DashboardView(LoginRequiredMixin,View):
+class SuccessMessageMixin:
+    success_message = ""
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            object=self.object,
+        )
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        success_message = self.get_success_message(form.cleaned_data)
+        if success_message:
+            messages.success(self.request, success_message)
+        return response
+
+
+class DashboardView(LoginRequiredMixin, View):
     def get(self, request):
         print(request.session)
         greeting = {}
         greeting['title'] = "Dashboard"
         greeting['pageview'] = "Timelock"
-        return render(request, 'menu/index.html',greeting)
+        return render(request, 'menu/index.html', greeting)
 
 
 def camera_feed(request):
@@ -55,8 +74,10 @@ def camera_feed(request):
 
                 if models.Barcode.objects.filter(barcode=str(barcode_data)).exists():
                     barcode_name = models.Barcode.objects.filter(barcode=str(barcode_data)).first()
-                    return JsonResponse(data={'barcode_data': barcode_data, 'file_saved_at': file_saved_at, 'barcode_name': barcode_name.name})
-                return JsonResponse(data={'barcode_data': barcode_data, 'file_saved_at': file_saved_at, 'barcode_name': barcode_name})
+                    return JsonResponse(data={'barcode_data': barcode_data, 'file_saved_at': file_saved_at,
+                                              'barcode_name': barcode_name.name})
+                return JsonResponse(
+                    data={'barcode_data': barcode_data, 'file_saved_at': file_saved_at, 'barcode_name': barcode_name})
             else:
                 return JsonResponse(data={'barcode_data': None})
         else:
@@ -174,6 +195,48 @@ class ProductPackagingCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+class ProductPackagingUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.ProductPackaging
+    form_class = ProductPackagingForm
+    template_name = 'pages/dashboard/products/add_product_kemasan.html'
+
+    def get_success_url(self):
+        return reverse('dashboard:list-products')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pageview'] = "Timelock"
+        context['title'] = "Update Product Packaging"
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        barcode = self.request.POST.get('barcode_input')
+        if models.Barcode.objects.filter(barcode=barcode).exists():
+            barcode = models.Barcode.objects.filter(barcode=barcode).first()
+        else:
+            return HttpResponse('Barcode not found')
+
+        self.object.barcode = barcode
+        self.object.slug = slugify(self.object.name + "-" + self.object.expiry_date.strftime("%d-%m-%y"))
+        self.object.label = label_expiry_date(self.object.expiry_date)
+        self.object.user = self.request.user
+        self.object.save()
+
+        return super().form_valid(form)
+
+
+class ProductPackagingDelete(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        id_product = request.GET.get('id', None)
+        product = models.ProductPackaging.objects.get(id=id_product)
+        if product:
+            product.delete()
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'failed'})
+
+
 class ProductNonPackagingListView(LoginRequiredMixin, ListView):
     model = models.ProductNonPackaging
     template_name = 'pages/dashboard/products/list_product_non_kemasan.html'
@@ -222,33 +285,44 @@ class ProductNonPackagingCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductPackagingUpdateView(LoginRequiredMixin, UpdateView):
-    model = models.ProductPackaging
-    form_class = ProductPackagingForm
-
-    template_name = 'pages/dashboard/products/add_product_kemasan.html'
+class ProductNonPackagingUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.ProductNonPackaging
+    form_class = ProductNonPackagingForm
+    template_name = 'pages/dashboard/products/add_product_non_kemasan.html'
 
     def get_success_url(self):
-        return reverse('dashboard:list-products')
+        return reverse('dashboard:list-products-nonkemasan')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pageview'] = "Timelock"
-        context['title'] = "Update Product Packaging"
+        context['title'] = "Update Product Non Packaging"
         return context
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        barcode = self.request.POST.get('barcode_input')
-        if models.Barcode.objects.filter(barcode=barcode).exists():
-            barcode = models.Barcode.objects.filter(barcode=barcode).first()
-        else:
-            return HttpResponse('Barcode not found')
+        name = self.request.POST.get('name').lower()
+        quality = self.request.POST.get('quality')
 
-        self.object.barcode = barcode
-        self.object.slug = slugify(self.object.name + "-" + self.object.expiry_date.strftime("%d-%m-%y"))
-        self.object.label = label_expiry_date(self.object.expiry_date)
+        ex = ExpiryDateManage(name, quality)
+        label, expiry_date = ex.get_expiry_date_label()
+
+        self.object.slug = slugify(self.object.name + "-" + expiry_date.strftime("%d-%m-%y"))
+        self.object.label = label
+        self.object.expiry_date = expiry_date
         self.object.user = self.request.user
         self.object.save()
+
         return super().form_valid(form)
+
+
+class ProductNonPackagingDelete(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        id_product = request.GET.get('id', None)
+        product = models.ProductNonPackaging.objects.get(id=id_product)
+        if product:
+            product.delete()
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'failed'})
 

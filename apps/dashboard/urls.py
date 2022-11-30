@@ -15,7 +15,10 @@ urlpatterns = [
     path("add-product-kemasan", views.ProductPackagingCreateView.as_view(), name="add-product-kemasan"),
     path("list-products/", views.ProductPackagingListView.as_view(), name="list-products"),
     path("list-products-nonkemasan/", views.ProductNonPackagingListView.as_view(), name="list-products-nonkemasan"),
-    path("edit-product_kemasan/<int:pk>/", views.ProductPackagingUpdateView.as_view(), name="edit-product_kemasan"),
+    path("edit-product-kemasan/<int:pk>/", views.ProductPackagingUpdateView.as_view(), name="edit-product-kemasan"),
+    path("edit-product-nonkemasan/<int:pk>/", views.ProductNonPackagingUpdateView.as_view(), name="edit-product-nonkemasan"),
+    path("delete-product-kemasan/", views.ProductPackagingDelete.as_view(), name="delete-product-kemasan"),
+    path("delete-product-nonkemasan/", views.ProductNonPackagingDelete.as_view(), name="delete-product-nonkemasan"),
     path("add-barcode/", views.BarcodeCreateView.as_view(), name="add-barcode"),
     path("list-barcode/", views.BarcodeListView.as_view(), name="list-barcode"),
 ]
