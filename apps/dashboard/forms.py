@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django import forms
 
@@ -20,4 +21,10 @@ class ProductNonPackagingForm(forms.ModelForm):
         fields = ['name', 'description', 'category', 'quality']
         exclude = ['user', 'slug', 'date_added', 'label', 'expiry_date']
 
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'first_name', 'last_name']
+        exclude = ['user', 'slug', 'date_added']
 

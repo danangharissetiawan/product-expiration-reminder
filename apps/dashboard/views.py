@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
-from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
+from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView, ModelFormMixin
 from . import models
 import os
 import time
@@ -15,7 +15,7 @@ from PIL import Image
 from pyzbar.pyzbar import decode
 
 from .utils.camera_streaming import CameraStreamingWidget
-from .forms import ProductPackagingForm, ProductNonPackagingForm
+from .forms import ProductPackagingForm, ProductNonPackagingForm, ProfileForm
 
 from .utils.management import label_expiry_date, ExpiryDateManage
 
@@ -325,4 +325,35 @@ class ProductNonPackagingDelete(LoginRequiredMixin, View):
             return JsonResponse({'status': 'success'})
         else:
             return JsonResponse({'status': 'failed'})
+
+
+class ProfileView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        context = {
+            'title': 'Profile',
+            'pageview': 'Profile',
+            'user': user
+        }
+        return render(request, 'pages/user/profile.html', context)
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.User
+    form_class = ProfileForm
+    template_name = 'pages/user/edit_profile.html'
+
+    def get_success_url(self):
+        return reverse('dashboard:profile')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Update Profile"
+        context['pageview'] = "Update Profile"
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        return super().form_valid(form)
 
