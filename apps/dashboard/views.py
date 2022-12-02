@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView, ModelFormMixin
 from . import models
+from .utils import product_utils as pu
 import os
 import time
 from datetime import datetime
@@ -356,4 +357,22 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         self.object = form.save(commit=False)
         self.object.save()
         return super().form_valid(form)
+
+
+class CalendarView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        products = pu.LabelProduct()
+        ps, pw, pd = products.count_label_packaging()
+        ns, nw, nd = products.count_label_non_packaging()
+        all_products = products.get_all_products()
+
+        context = {
+            'title': 'Calendar',
+            'pageview': 'Calendar',
+            'safety_count': ps + ns,
+            'warning_count': pw + nw,
+            'danger_count': pd + nd,
+            'products': all_products
+        }
+        return render(request, 'pages/dashboard/calendar.html', context)
 
