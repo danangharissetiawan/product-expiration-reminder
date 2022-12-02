@@ -16,7 +16,7 @@ from PIL import Image
 from pyzbar.pyzbar import decode
 
 from .utils.camera_streaming import CameraStreamingWidget
-from .forms import ProductPackagingForm, ProductNonPackagingForm, ProfileForm
+from .forms import ProductPackagingForm, ProductNonPackagingForm, ProfileForm, NotificationSettingForm
 
 from .utils.management import label_expiry_date, ExpiryDateManage
 
@@ -376,3 +376,20 @@ class CalendarView(LoginRequiredMixin, View):
         }
         return render(request, 'pages/dashboard/calendar.html', context)
 
+
+class NotificationView(LoginRequiredMixin, FormView):
+
+    form_class = NotificationSettingForm
+    template_name = 'pages/dashboard/notification.html'
+    success_url = reverse_lazy('dashboard:notifications')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Notification'
+        context['pageview'] = 'Notification'
+        return context
+
+    def form_valid(self, form):
+        user = self.request.user
+        user.save()
+        return super().form_valid(form)

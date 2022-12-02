@@ -24,5 +24,6 @@ urlpatterns = [
     path("calendar/", views.CalendarView.as_view(), name="calendar"),
     path("profile/", views.ProfileView.as_view(), name="profile"),
     path("edit-profile/<int:pk>/", views.ProfileUpdateView.as_view(), name="edit-profile"),
+    path("notifications/", views.NotificationView.as_view(), name="notifications"),
 ]
 

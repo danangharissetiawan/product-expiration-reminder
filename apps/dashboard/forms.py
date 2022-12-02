@@ -28,3 +28,15 @@ class ProfileForm(forms.ModelForm):
         fields = ['email', 'username', 'first_name', 'last_name']
         exclude = ['user', 'slug', 'date_added']
 
+
+class NotificationSettingForm(forms.Form):
+    MEDIA_CHOICES = (
+        ('email', 'Email'),
+        ('wa', 'Whatsapp'),
+    )
+
+    notification = forms.BooleanField(required=False)
+    media = forms.ChoiceField(choices=MEDIA_CHOICES, required=False)
+    warnings = forms.BooleanField(required=False)
+
+
