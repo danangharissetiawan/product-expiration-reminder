@@ -21,5 +21,9 @@ urlpatterns = [
     path("delete-product-nonkemasan/", views.ProductNonPackagingDelete.as_view(), name="delete-product-nonkemasan"),
     path("add-barcode/", views.BarcodeCreateView.as_view(), name="add-barcode"),
     path("list-barcode/", views.BarcodeListView.as_view(), name="list-barcode"),
+    path("calendar/", views.CalendarView.as_view(), name="calendar"),
+    path("profile/", views.ProfileView.as_view(), name="profile"),
+    path("edit-profile/<int:pk>/", views.ProfileUpdateView.as_view(), name="edit-profile"),
+    path("notifications/", views.NotificationView.as_view(), name="notifications"),
 ]
 

@@ -6,8 +6,10 @@ from django.utils.text import slugify
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
-from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
+from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView, ModelFormMixin
 from . import models
+from .utils import product_utils as pu
+from .utils import send_notification as sn
 import os
 import time
 from datetime import datetime
@@ -15,7 +17,7 @@ from PIL import Image
 from pyzbar.pyzbar import decode
 
 from .utils.camera_streaming import CameraStreamingWidget
-from .forms import ProductPackagingForm, ProductNonPackagingForm
+from .forms import ProductPackagingForm, ProductNonPackagingForm, ProfileForm, NotificationSettingForm
 
 from .utils.management import label_expiry_date, ExpiryDateManage
 
@@ -156,6 +158,7 @@ class ProductPackagingListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = queryset.filter(user=self.request.user)
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -246,6 +249,7 @@ class ProductNonPackagingListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = queryset.filter(user=self.request.user)
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -325,4 +329,74 @@ class ProductNonPackagingDelete(LoginRequiredMixin, View):
             return JsonResponse({'status': 'success'})
         else:
             return JsonResponse({'status': 'failed'})
+
+
+class ProfileView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        context = {
+            'title': 'Profile',
+            'pageview': 'Profile',
+            'user': user
+        }
+        return render(request, 'pages/user/profile.html', context)
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.User
+    form_class = ProfileForm
+    template_name = 'pages/user/edit_profile.html'
+
+    def get_success_url(self):
+        return reverse('dashboard:profile')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Update Profile"
+        context['pageview'] = "Update Profile"
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        return super().form_valid(form)
+
+
+class CalendarView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        products = pu.LabelProduct(user)
+        ps, pw, pd = products.count_label_packaging()
+        ns, nw, nd = products.count_label_non_packaging()
+        all_products = products.get_all_products()
+
+        context = {
+            'title': 'Calendar',
+            'pageview': 'Calendar',
+            'safety_count': ps + ns,
+            'warning_count': pw + nw,
+            'danger_count': pd + nd,
+            'products': all_products
+        }
+        return render(request, 'pages/dashboard/calendar.html', context)
+
+
+class NotificationView(LoginRequiredMixin, FormView):
+
+    form_class = NotificationSettingForm
+    template_name = 'pages/dashboard/notification.html'
+    success_url = reverse_lazy('dashboard:notifications')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Notification'
+        context['pageview'] = 'Notification'
+        return context
+
+    def form_valid(self, form):
+        user = self.request.user
+        form.send_mail_to_admin(user)
+        return super().form_valid(form)
+
 
