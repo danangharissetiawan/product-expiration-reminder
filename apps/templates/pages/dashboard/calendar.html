@@ -167,7 +167,7 @@
                             title: "{{ product.name }}",
                             start: new Date(
                                 {{ product.expiry_date.year }},
-                                {{ product.expiry_date.month }},
+                                {{ product.expiry_date.month }}-1,
                                 {{ product.expiry_date.day }}
                             ),
                             allDay: !1,

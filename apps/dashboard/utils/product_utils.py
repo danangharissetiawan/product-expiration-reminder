@@ -2,9 +2,9 @@ from dashboard.models import ProductPackaging, ProductNonPackaging
 
 
 class LabelProduct:
-    def __init__(self):
-        self.packaging = ProductPackaging.objects.all()
-        self.non_packaging = ProductNonPackaging.objects.all()
+    def __init__(self, user):
+        self.packaging = ProductPackaging.objects.filter(user=user)
+        self.non_packaging = ProductNonPackaging.objects.filter(user=user)
 
     def get_packaging(self):
         return self.packaging

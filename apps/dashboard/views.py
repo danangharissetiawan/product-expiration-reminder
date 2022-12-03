@@ -9,6 +9,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView, ModelFormMixin
 from . import models
 from .utils import product_utils as pu
+from .utils import send_notification as sn
 import os
 import time
 from datetime import datetime
@@ -157,6 +158,7 @@ class ProductPackagingListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = queryset.filter(user=self.request.user)
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -247,6 +249,7 @@ class ProductNonPackagingListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = queryset.filter(user=self.request.user)
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -361,7 +364,8 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 class CalendarView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        products = pu.LabelProduct()
+        user = request.user
+        products = pu.LabelProduct(user)
         ps, pw, pd = products.count_label_packaging()
         ns, nw, nd = products.count_label_non_packaging()
         all_products = products.get_all_products()
@@ -383,6 +387,7 @@ class NotificationView(LoginRequiredMixin, FormView):
     template_name = 'pages/dashboard/notification.html'
     success_url = reverse_lazy('dashboard:notifications')
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Notification'
@@ -391,5 +396,7 @@ class NotificationView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         user = self.request.user
-        user.save()
+        form.send_mail_to_admin(user)
         return super().form_valid(form)
+
+

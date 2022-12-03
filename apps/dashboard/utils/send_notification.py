@@ -27,12 +27,12 @@ class AbstractNotification:
 
     def get_warning_products(self):
         products_packs, products_non = self.get_all_products_by_user()
-        today = date.today()
         products = products_packs.filter(label='W').union(products_non.filter(label='W'))
         return products
 
-    def get_expiring_products(self, products_packs, products_non):
+    def get_expiring_products(self,):
         today = date.today()
+        products_packs, products_non = self.get_all_products_by_user()
         products = products_packs.filter(expiry_date__lte=today).union(products_non.filter(expiry_date__lte=today))
         return products
 
@@ -51,7 +51,7 @@ class MailAttachment(MailRecipient):
         super().__init__(user)
         self.products_packs, self.products_non = self.get_all_products_by_user()
         self.safety, self.warnings, self.danger = self.get_label(self.products_packs, self.products_non)
-        self.expiring_products = self.get_expiring_products(self.products_packs, self.products_non)
+        self.expiring_products = self.get_expiring_products()
         self.warnings_products = self.get_warning_products()
 
     def get_attachment(self):
@@ -104,5 +104,6 @@ class ScheduledMail(MailAttachment):
         # recipient = self.user.email
         # send_mail(subject, message, settings.EMAIL_HOST_USER, recipient, fail_silently=False)
 
+    # def test_send_
 
 
