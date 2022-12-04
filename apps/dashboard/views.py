@@ -44,11 +44,34 @@ class SuccessMessageMixin:
 
 class DashboardView(LoginRequiredMixin, View):
     def get(self, request):
-        print(request.session)
-        greeting = {}
-        greeting['title'] = "Dashboard"
-        greeting['pageview'] = "Timelock"
-        return render(request, 'menu/index.html', greeting)
+        user = request.user
+        products = pu.LabelProduct(user)
+        ps, pw, pd = products.count_label_packaging()
+        ns, nw, nd = products.count_label_non_packaging()
+        all_count = ps + pw + pd + ns + nw + nd
+        all_products = products.get_all_products()
+
+        lastest_products = products.get_lastest_products()
+
+        context = {
+            'title': 'Dashboard',
+            'pageview': 'TimeLock',
+            'safety_count': ps + ns,
+            'warning_count': pw + nw,
+            'danger_count': pd + nd,
+            'all_count': all_count,
+            'lastest_products': lastest_products,
+            'products': all_products,
+            'percent_safety': round((ps + ns) / all_count * 100, 2),
+            'percent_warning': round((pw + nw) / all_count * 100, 2),
+            'percent_danger': round((pd + nd) / all_count * 100, 2),
+        }
+
+        return render(request, 'menu/index.html', context)
+
+
+
+
 
 
 def camera_feed(request):
@@ -124,7 +147,7 @@ class BarcodeListView(LoginRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'List Barcode'
-        context['pageview'] = 'Barcode'
+        context['pageview'] = 'TimeLock'
         return context
 
 
@@ -140,7 +163,7 @@ class BarcodeCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         status = open_camera()
         context['cam_status'] = status
-        context['pageview'] = "Timelock"
+        context['pageview'] = "TimeLock"
         context['title'] = "Add Barcode"
         return context
 
@@ -164,7 +187,7 @@ class ProductPackagingListView(LoginRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'List Product Packaging'
-        context['pageview'] = 'Product'
+        context['pageview'] = 'TimeLock'
         return context
 
 
@@ -178,7 +201,7 @@ class ProductPackagingCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['pageview'] = "Timelock"
+        context['pageview'] = "TimeLock"
         context['title'] = "Add Product Packaging"
         return context
 
@@ -208,7 +231,7 @@ class ProductPackagingUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['pageview'] = "Timelock"
+        context['pageview'] = "TimeLock"
         context['title'] = "Update Product Packaging"
         return context
 
@@ -255,7 +278,7 @@ class ProductNonPackagingListView(LoginRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'List Product Non Packaging'
-        context['pageview'] = 'Product'
+        context['pageview'] = 'TimeLock'
         return context
 
 
@@ -269,7 +292,7 @@ class ProductNonPackagingCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['pageview'] = "Timelock"
+        context['pageview'] = "TimeLock"
         context['title'] = "Add Product Non Packaging"
         return context
 
@@ -299,7 +322,7 @@ class ProductNonPackagingUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['pageview'] = "Timelock"
+        context['pageview'] = "TimeLock"
         context['title'] = "Update Product Non Packaging"
         return context
 
@@ -336,7 +359,7 @@ class ProfileView(LoginRequiredMixin, View):
         user = request.user
         context = {
             'title': 'Profile',
-            'pageview': 'Profile',
+            'pageview': 'TimeLock',
             'user': user
         }
         return render(request, 'pages/user/profile.html', context)
@@ -353,7 +376,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Update Profile"
-        context['pageview'] = "Update Profile"
+        context['pageview'] = "TimeLock"
         return context
 
     def form_valid(self, form):
@@ -372,7 +395,7 @@ class CalendarView(LoginRequiredMixin, View):
 
         context = {
             'title': 'Calendar',
-            'pageview': 'Calendar',
+            'pageview': 'TimeLock',
             'safety_count': ps + ns,
             'warning_count': pw + nw,
             'danger_count': pd + nd,
@@ -391,7 +414,7 @@ class NotificationView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Notification'
-        context['pageview'] = 'Notification'
+        context['pageview'] = 'TimeLock'
         return context
 
     def form_valid(self, form):

@@ -37,6 +37,9 @@ class LabelProduct:
     def count_label_non_packaging(self):
         return self.count_label(self.get_non_packaging())
 
+    def get_lastest_products(self):
+        return self.get_all_products().order_by('-date_added')[:10]
+
 
 if __name__ == '__main__':
     label = LabelProduct()
