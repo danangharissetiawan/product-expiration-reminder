@@ -136,3 +136,6 @@ dmypy.json
 
 models/date-expired/*
 models/fruitNet/*
+
+yolov5/weights/yolov5s.pt
+yolov5/weights/yolov5x.pt

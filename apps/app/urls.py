@@ -16,12 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
+from django.conf import settings
+from django.conf.urls.static import static
 from app import views
+
+app_name = 'app'
 
 urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
-    path('dashboard/', include('dashboard.urls', namespace='dashboard')),  # Products
+    path('', include('dashboard.urls', namespace='dashboard')),  # Products
     path('layouts/', include('layouts.urls')),  # Layout
     path('authentication/', include('authentication.urls')),  # Authentication
     path('admin/', admin.site.urls),  # Admin
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
