@@ -3,13 +3,17 @@
 <html lang="en" >
 
 <head>
+    {% load pwa %}
+    {% progressive_web_app_meta %}
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>{{title}} | TIMELOCK</title>
 	<meta content="Product Expiration Reminder" name="description" />
 	<meta content="TimeLock" name="author" />
-	<!-- App favicon -->
+    <meta name="keywords" content="Product Expiration Reminder" />
+	<link rel="manifest" href="{% static 'manifest.json' %}">
+    <!-- App favicon -->
 	<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
     <!--Extra Css-->
     {% block extra_css %}{% endblock extra_css %}

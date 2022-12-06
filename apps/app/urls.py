@@ -25,9 +25,11 @@ app_name = 'app'
 urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
     path('', include('dashboard.urls', namespace='dashboard')),  # Products
+
     path('layouts/', include('layouts.urls')),  # Layout
     path('authentication/', include('authentication.urls')),  # Authentication
     path('admin/', admin.site.urls),  # Admin
+    path("", include("pwa.urls")),
 ]
 
 if settings.DEBUG:

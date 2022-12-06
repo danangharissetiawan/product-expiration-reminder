@@ -4,6 +4,7 @@ from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js')
 
 import environ
 
@@ -32,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'layouts',
     'crispy_forms',
+    'pwa',
 
     'dashboard',
     'authentication',
@@ -151,10 +153,10 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 ADMIN_EMAIL = env('ADMIN_EMAIL')
 
 LOGIN_URL = 'auth-login'
-LOGIN_REDIRECT_URL = 'auth-login'
+LOGIN_REDIRECT_URL = 'dashboard:home'
 
 # LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = "dashboard"
+LOGOUT_REDIRECT_URL = "home"
 
 SESSION_EXPIRE_SECONDS = 1000  # 3 minute
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
@@ -170,3 +172,37 @@ MODEL_FRUIT_PATH = Path(__file__).resolve().parent.parent.parent / "models/fruit
 LABEL_DATE_PATH = Path(__file__).resolve().parent.parent.parent / "models/date-expired/date_exp_labels.txt"
 
 MODEL_DATE_PATH = Path(__file__).resolve().parent.parent.parent / "models/date-expired/inception_resnetv2_98.h5"
+
+
+# PWA
+PWA_APP_NAME = 'TIMELOCK'
+PWA_APP_DESCRIPTION = "Product Expiration Reminder"
+PWA_APP_THEME_COLOR = '#000000'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+	{
+		'src': '/static/images/logo-sm-dark.png',
+		'sizes': '64x64',
+	}
+]
+PWA_APP_ICONS_APPLE = [
+	{
+		'src': '/static/images/logo-sm-dark.png',
+		'sizes': '160x160'
+	}
+]
+PWA_APP_SPLASH_SCREEN = [
+	{
+		'src': '/static/images/logo-dark.png',
+		'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+	}
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'en-US'
+
+PWA_APP_DEBUG_MODE = False
