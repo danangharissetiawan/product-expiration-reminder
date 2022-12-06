@@ -15,6 +15,9 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'libs/toastr/build/toastr.min.css' %}">
 
+     <!-- Lightbox css -->
+    <link href="{% static 'libs/magnific-popup/magnific-popup.css'%}" rel="stylesheet" type="text/css" />
+
 {% endblock extra_css %}
 
 {% block content %}
@@ -32,7 +35,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <form action="" method="post" id="fromProductNonKemasan">
+                        <form action="{% if object %}{% url "dashboard:edit-product-nonkemasan" object.id %}{% else %}{% url "dashboard:add-product-non-kemasan" %}{% endif %}" method="post" id="fromProductNonKemasan">
                             {% csrf_token %}
                             <div class="tab-content twitter-bs-wizard-tab-content">
                                 {% for error in form.errors %}
@@ -80,12 +83,8 @@
 
                                             <div class="col-lg-5">
                                                 <div class="mb-3">
-                                                    <label for="category" id="{{ form.quality.id_for_label }}">{{ form.quality.label }}</label>
-                                                    <select class="form-control select2" name="{{ form.quality.name }}" id="{{ form.quality.id_for_label }}">
-                                                        {% for x, y in form.fields.quality.choices %}
-                                                        <option value="{{ x }}" {% if form.fields.quality.value == x or object.quality == x %} selected{% endif %}>{{ y }}</option>
-                                                        {% endfor %}
-                                                    </select>
+                                                    <label for="{{ form.quality.id_for_label }}">{{ form.quality.label }}</label>
+                                                    <input id="{{ form.quality.id_for_label }}" name="{{ form.quality.name }}" type="text" class="form-control" value="{{ object.quality }}" readonly>
                                                     {% if form.quality.errors %}
                                                         {% for error in form.quality.errors %}
                                                             <div class="alert alert-danger mt-3" role="alert">
@@ -93,12 +92,24 @@
                                                             </div>
                                                         {% endfor %}
                                                     {% endif %}
+{#                                                    <select class="form-control select2" name="{{ form.quality.name }}" id="{{ form.quality.id_for_label }}">#}
+{#                                                        {% for x, y in form.fields.quality.choices %}#}
+{#                                                        <option value="{{ x }}" {% if form.fields.quality.value == x or object.quality == x %} selected{% endif %}>{{ y }}</option>#}
+{#                                                        {% endfor %}#}
+{#                                                    </select>#}
+{#                                                    {% if form.quality.errors %}#}
+{#                                                        {% for error in form.quality.errors %}#}
+{#                                                            <div class="alert alert-danger mt-3" role="alert">#}
+{#                                                                {{ error }}#}
+{#                                                            </div>#}
+{#                                                        {% endfor %}#}
+{#                                                    {% endif %}#}
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-2">
                                                 <div class="mb-3" style="margin-top: 30px;">
-                                                    <a class="btn btn-outline-info d-grid" href="#" role="button">Scan</a>
+                                                    <a class="popup-form btn btn-outline-info d-grid" href="#test-form" role="button">Scan</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -134,6 +145,41 @@
         </div>
     </div>
     <!-- end row -->
+
+    <div class="card mfp-hide mfp-popup-form mx-auto" id="test-form">
+        <div class="card-body">
+            <h4 class="card-title">Dropzone</h4>
+            <p class="card-title-desc">DropzoneJS is an open source library
+                that provides drag’n’drop file uploads with image previews.
+            </p>
+
+            <div>
+                <form id="dropzoneForm" action="#" class="dropzone" enctype="multipart/form-data" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="abc" value="fruit">
+                    <div class="fallback">
+                        <input name="file" type="file" multiple="multiple">
+                    </div>
+                    <div class="dz-message needsclick dz-clickable">
+                        <div class="mb-3">
+                            <i class="display-4 text-muted ri-upload-cloud-2-line"></i>
+                        </div>
+
+                        <h4>Drop files here or click to upload.</h4>
+                    </div>
+
+                </form>
+
+                <div class="text-center mt-4">
+                    <input type="submit" id="submit-all" class="btn btn-primary waves-effect waves-light" value="Save Files">
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
 {% endblock content %}
 
 {% block extra_javascript %}
@@ -158,8 +204,101 @@
     <!-- toastr init -->
     <script src="{% static 'js/pages/toastr.init.js' %}"></script>
 
+    <!-- Magnific Popup-->
+    <script src="{% static 'libs/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+
+    <!-- lightbox init js-->
+    <script src="{% static 'js/pages/lightbox.init.js' %}"></script>
+
 
     <script>
+
+    const final_url = "{% url 'dashboard:image-upload' %}";
+    var popup_form = $("#test-form");
+
+    Dropzone.options.dropzoneForm = {
+        url : final_url,
+        addRemoveLinks: true,
+        method: "POST",
+        params: 'file_upload',
+        maxFilesize: 256 * 4 * 2,
+        dictFileTooBig: 'Image is bigger than 4MB',
+        acceptedFiles: ".jpeg,.jpg,.png,.gif",
+        uploadMultiple: true,
+        dictDefaultMessage: "Drop files here or click to upload.",
+        parallelUploads: 1,
+        maxFiles: 12,
+        clickable: true,
+        init: function () {
+            mydropzone = this;
+
+            $("#submit-all").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                mydropzone.processQueue();
+                popup_form.magnificPopup('close');
+                toastr.success('Image Uploaded Successfully', 'Success', {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
+            });
+            mydropzone.on('sending', function (file, xhr, formData) {
+                formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                // Append all form inputs to the formData Dropzone will POST
+            });
+        },
+        success: function (file, data) {
+            console.log(data);
+            if (data.status === 'success') {
+                if (data.quality === 'g') {
+                    data.quality = 'Good';
+                } else if (data.quality === 'b') {
+                    data.quality = 'Bad';
+                } else {
+                    data.quality = 'Mixed';
+                }
+                console.log(data);
+                $(".dz-remove").hide();
+                if (data.name_product !== null && data.quality !== '') {
+                    $("#{{ form.name.id_for_label }}").val(data.name_product).change();
+                    $("#{{ form.quality.id_for_label }}").val(data.quality).change();
+                }
+
+            } else {
+                toastr.error('Image Upload Failed', 'Error', {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
+            }
+        },
+    }
+
     function success_redirect() {
         window.location.href = "{% url 'dashboard:list-products-nonkemasan' %}";
     }
@@ -216,41 +355,7 @@
     });
 
 
-    $("#btn_ReadQRCode").on("click", function (e) {
-        console.log("Ajax request triggered.");
-        e.preventDefault();
-        $.ajax({
-            type: "POST",
-            url: "{% url 'dashboard:camera_feed' %}",
-            data: {
-                csrfmiddlewaretoken: "{{ csrf_token }}",
-                dataType: "json",
-            },
-            success: function (data) {
-                if (data.barcode_data !== null && data.barcode_data !== '') {
-                    console.log(data);
-                    $("#txt_BarcodeData").val(data.barcode_data).change();
-                    $("#lbl_LastModified").html(
-                        "Last modified at: " + data.file_saved_at
-                    );
-                    if (data.barcode_name !== null && data.barcode_name !== '') {
-                        $("#txt_BarcodeName").val(data.barcode_name).change();
-                    }
-                    else {
-                        $("#txt_BarcodeName").val("No name found").change();
-                        $("#btn_AddNewBarcode").removeAttr("hidden");
-                    }
-                } else {
-                    console.log(data);
-                    $("#txt_BarcodeData").val("").change();
-                    $("#lbl_LastModified").html("<h3><em>No data or file not found. Scan barcode again.</em></h3>");
-                }
-            },
-            error: function () {
-                console.log(error);
-            }
-        });
-    });
+
     </script>
 
 {% endblock extra_javascript %}

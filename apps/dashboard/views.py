@@ -1,4 +1,8 @@
+from pathlib import Path
+
+from django.conf import settings
 from django.contrib import messages
+from django.core.files.storage import FileSystemStorage
 from django.http import request, StreamingHttpResponse, JsonResponse, HttpResponse
 from django.shortcuts import redirect, render, reverse
 from django.urls import reverse_lazy
@@ -20,6 +24,7 @@ from .utils.camera_streaming import CameraStreamingWidget
 from .forms import ProductPackagingForm, ProductNonPackagingForm, ProfileForm, NotificationSettingForm
 
 from .utils.management import label_expiry_date, ExpiryDateManage
+from .utils.prediction import predict_fruit, predict_date_expired
 
 
 # from utils.camera_streaming import CameraStreamingWidget
@@ -133,6 +138,12 @@ def open_camera():
     return status
 
 
+def open_camera_view(request):
+    if request.method == "GET":
+        status = open_camera()
+        return JsonResponse(data={'status': status})
+
+
 class BarcodeListView(LoginRequiredMixin, ListView):
     model = models.Barcode
     template_name = 'pages/dashboard/barcode/list_barcode.html'
@@ -203,7 +214,15 @@ class ProductPackagingCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['pageview'] = "TimeLock"
         context['title'] = "Add Product Packaging"
+        # cam_status = False
+        # print(self.request.GET.get('scan_barcode'))
+        # if self.request.GET.get('scan_barcode'):
+        #     cam_status = open_camera()
+        # context['cam_status'] = cam_status
+        # context['form'] = ProductPackagingForm()
+        # context['cam_status'] = open_camera()
         return context
+
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -237,17 +256,20 @@ class ProductPackagingUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        print(self.object.expiry_date)
         barcode = self.request.POST.get('barcode_input')
         if models.Barcode.objects.filter(barcode=barcode).exists():
             barcode = models.Barcode.objects.filter(barcode=barcode).first()
         else:
             return HttpResponse('Barcode not found')
 
+
         self.object.barcode = barcode
         self.object.slug = slugify(self.object.name + "-" + self.object.expiry_date.strftime("%d-%m-%y"))
         self.object.label = label_expiry_date(self.object.expiry_date)
         self.object.user = self.request.user
         self.object.save()
+        # super(ProductPackagingUpdateView, self).form_valid(form)
 
         return super().form_valid(form)
 
@@ -421,5 +443,42 @@ class NotificationView(LoginRequiredMixin, FormView):
         user = self.request.user
         form.send_mail_to_admin(user)
         return super().form_valid(form)
+
+
+def image_upload(request):
+    if request.method == 'POST':
+        # image = request.FILES.getlist('file')
+        # for img in image:
+        #     with open(Path(settings.MEDIA_ROOT, img.name), 'wb+') as f:
+        #         for chunk in img.chunks():
+        #             f.write(chunk)
+        files = [request.FILES.get('file[%d]' % i) for i in range(0, len(request.FILES))]
+        abc = request.POST['abc']
+        folder = "media/predictions"
+        fs = FileSystemStorage(location=folder)
+        image_path = []
+        for file in files:
+            filename = fs.save(file.name, file)
+            image_path.append(folder + "/" + filename)
+
+        if abc == "fruit":
+            name, quality = predict_fruit(image_path[0])
+            data = {
+                'status': 'success',
+                'name_product': name,
+                'quality': quality
+            }
+            print(data)
+            return JsonResponse(data)
+        elif abc == "date":
+            date = predict_date_expired(image_path[0])
+            data = {
+                'status': 'success',
+                'date': date
+            }
+            return JsonResponse(data)
+    else:
+        return JsonResponse({'status': 'failed'})
+
 
 

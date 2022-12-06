@@ -16,6 +16,9 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'libs/toastr/build/toastr.min.css' %}">
 
+    <!-- Lightbox css -->
+    <link href="{% static 'libs/magnific-popup/magnific-popup.css'%}" rel="stylesheet" type="text/css" />
+
 {% endblock extra_css %}
 
 {% block content %}
@@ -43,7 +46,7 @@
                                 </a>
                             </li>
                         </ul>
-                        <form action="" method="post" id="fromProductKemasan">
+                        <form action="{% if object %}{% url "dashboard:edit-product-kemasan" object.id %}{% else %}{% url "dashboard:add-product-kemasan" %}{% endif %}" method="post" id="fromProductKemasan">
                             {% csrf_token %}
                             <div class="tab-content twitter-bs-wizard-tab-content">
                                 {% for error in form.errors %}
@@ -74,13 +77,16 @@
                                             </div>
                                             <div class="col-lg-5">
                                                 <div class="mb-4">
-                                                    <label class="form-label" id="{{ form.expiry_date.id_for_label }}">{{ form.expiry_date.label }}</label>
-                                                    <div class="input-group" id="{{ form.expiry_date.id_for_label }}">
-                                                        <input type="text" class="form-control" name="{{ form.expiry_date.name }}" placeholder="dd M, yyyy"
-                                                            data-date-format="dd M, yyyy" data-date-container='#{{ form.expiry_date.id_for_label }}' value="{{ object.expiry_date|date:"d M, Y" }}" data-provide="datepicker">
+{#                                                    {{ form.expiry_date|as_crispy_field }}#}
 
-                                                        <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-                                                    </div><!-- input-group -->
+
+                                                    <label class="form-label">{{ form.expiry_date.label }}</label>
+                                                        <div class="input-group" id="datepicker1">
+                                                            <input id="date_expiry_picker" name="{{ form.expiry_date.name }}" type="text" class="form-control" placeholder="dd M, yyyy"
+                                                                data-date-format="yyyy-m-d" data-date-container='#datepicker1' data-provide="datepicker" value="{{ object.expiry_date|date:"Y-m-d" }}">
+
+                                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                                        </div><!-- input-group -->
                                                     {% if form.expiry_date.errors %}
                                                         {% for error in form.expiry_date.errors %}
                                                             <div class="alert alert-danger mt-3" role="alert">
@@ -92,7 +98,7 @@
                                             </div>
                                             <div class="col-lg-2">
                                                 <div clas="mb-3" style="margin-top: 30px;">
-                                                    <a class="btn btn-outline-info d-grid" href="#" role="button">Scan</a>
+                                                    <a id="scan-DateForm" class="popup-form btn btn-outline-info d-grid" href="#scan-date-form" role="button" >Scan</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -101,7 +107,7 @@
 
                                                 <div class="mb-3">
                                                     <label class="form-label" for="{{ form.barcode_input.id_for_label }}">{{ form.barcode_input.label }}</label>
-                                                    <input id="{{ form.barcode_input.id_for_label }}" name="{{ form.barcode_input.name }}" value="{{ object.barcode.barcode }}" type="text" class="form-control">
+                                                    <input id="{{ form.barcode_input.id_for_label }}" name="{{ form.barcode_input.name }}" value="{{ object.barcode.barcode }}" type="text" class="form-control" readonly>
                                                     {% if form.barcode_input.errors %}
                                                         {% for error in form.name.errors %}
                                                             <div class="alert alert-danger mt-3" role="alert">
@@ -116,7 +122,7 @@
 
                                                 <div class="mb-3">
                                                     <label class="form-label" for="{{ form.name.id_for_label }}">Product Name</label>
-                                                    <input id="{{ form.name.id_for_label }}" name="{{ form.name.name }}" value="{{ object.name }}" type="text" class="form-control">
+                                                    <input id="{{ form.name.id_for_label }}" name="{{ form.name.name }}" value="{{ object.name }}" type="text" class="form-control" readonly>
                                                     {% if form.name.errors %}
                                                         {% for error in form.name.errors %}
                                                             <div class="alert alert-danger mt-3" role="alert">
@@ -128,7 +134,7 @@
                                             </div>
                                             <div class="col-lg-2">
                                                 <div class="mb-3" style="margin-top: 30px;">
-                                                    <a class="btn btn-outline-info d-grid" href="#" role="button">Scan</a>
+                                                    <a id="scan-BarcodeBtn" class="popup-form btn btn-outline-info d-grid" href="#scan-barcode-form" role="button">Scan</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -154,7 +160,7 @@
                             </div>
                             <ul class="pager wizard twitter-bs-wizard-pager-link">
                                 <a class="btn btn-outline-warning" href="{% url "dashboard:list-products" %}">Back</a>
-                                <li class="next"><button class="btn btn-outline-info" href="#">Submit</button></li>
+                                <li class="next"><button class="btn btn-outline-info" type="submit">Submit</button></li>
                             </ul>
 
                         </form>
@@ -165,6 +171,129 @@
         </div>
     </div>
     <!-- end row -->
+
+    <div class="card mfp-hide mfp-popup-form mx-auto" id="scan-date-form">
+        <div class="card-body">
+            <h4 class="card-title">Dropzone</h4>
+            <p class="card-title-desc">DropzoneJS is an open source library
+                that provides drag’n’drop file uploads with image previews.
+            </p>
+
+            <div>
+                <form id="dropzoneForm" action="#" class="dropzone" enctype="multipart/form-data" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="abc" value="date">
+                    <div class="fallback">
+                        <input name="file" type="file" multiple="multiple">
+                    </div>
+                    <div class="dz-message needsclick dz-clickable">
+                        <div class="mb-3">
+                            <i class="display-4 text-muted ri-upload-cloud-2-line"></i>
+                        </div>
+
+                        <h4>Drop files here or click to upload.</h4>
+                    </div>
+
+                </form>
+
+                <div class="text-center mt-4">
+                    <input type="submit" id="submit-all" class="btn btn-primary waves-effect waves-light" value="Save Files">
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="card mfp-hide mfp-popup-form mx-auto" id="scan-barcode-form">
+        <div class="card-body">
+            <form id="form-barcode" action="#" method="post">
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h4 class="card-title">Scan Barcode</h4>
+                        <p class="card-title-desc">Scan barcode anda</p>
+{#                        {% if cam_status %}#}
+                        <div id="cam_success" class="alert alert-success alert-dismissible fade show" role="alert">
+                            Camera stream status: connected
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <img id="cam-feed" src="" class="img-fluid mb-5" />
+{#                        {% else %}#}
+                        <div id="cam_error" hidden>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                Camera stream status: Camera is either not accessible or busy
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <div class="alert alert-warning" role="alert">
+                                <b>Things to check:</b>
+                                <ul class="text-right list-inline">
+                                    <li>USB connection?</li>
+                                    <li>Camera is already in use?</li>
+                                </ul>
+                            </div>
+                        </div>
+
+{#                        {% endif %}#}
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 class="card-title">Information</h4>
+                        <p class="card-title-desc">Barcode Information</p>
+                            <div class="mb-3">
+                                <label class="form-label" for="txtBarcode">Barcode</label>
+                                <input id="txtBarcode" name="barcode" class="form-control" readonly>
+                                {% comment %}
+                                {% if form.barcode.errors %}
+                                    {% for error in form.barcode.errors %}
+                                        <div class="alert alert-danger mt-3" role="alert">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                {% endcomment %}
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="txtName">Product Name</label>
+                                <input id="txtName" name="name" class="form-control" readonly>
+                                {% comment %}
+                                {% if form.name.errors %}
+                                    {% for error in form.name.errors %}
+                                        <div class="alert alert-danger mt-3" role="alert">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                {% endcomment %}
+                            </div>
+                            <div class="mb-3">
+                                <em id="lbl_LastModified"></em>
+                            </div>
+                            <div id="ifExists" class="mb-3" hidden>
+                                <div class="alert alert-danger mt-3" role="alert">
+                                    Product already exists
+                                </div>
+                            </div>
+
+                        <div class="row">
+                            <div class="d-flex justify-content-between">
+                                <a id="btn_Close" class="btn btn-outline-warning waves-effect waves-light" href="javascript:void(0);" hidden>Back</a>
+                                <a id="btn_AddNewBarcode" class="btn btn-outline-info waves-effect waves-light" href="{% url "dashboard:add-barcode" %}" hidden>Add New Barcode</a>
+                                <a id="btn_ReadQRCode" class="btn btn-outline-primary waves-effect waves-light" href="#">Read barcode</a>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+
 {% endblock content %}
 
 {% block extra_javascript %}
@@ -190,22 +319,43 @@
     <!-- toastr init -->
     <script src="{% static 'js/pages/toastr.init.js' %}"></script>
 
+    <!-- Magnific Popup-->
+    <script src="{% static 'libs/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+
+    <!-- lightbox init js-->
+    <script src="{% static 'js/pages/lightbox.init.js' %}"></script>
+
+
 
     <script>
-    function success_redirect() {
-        window.location.href = "{% url 'dashboard:list-products' %}";
-    }
 
-    $("form#fromProductKemasan").submit(function(e) {
-        e.preventDefault();
-        var form = $(this);
-        var url = form.attr('action');
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: form.serialize(),
-            success: function(data) {
-                toastr.success('{% if object %}Product Updated Successfully{% else %}Product Added Successfully{% endif %}', 'Success', {
+    const image_upload = "{% url 'dashboard:image-upload' %}";
+    var popup_scan_date = $("#scan-DateForm");
+
+
+    Dropzone.options.dropzoneForm = {
+        url : image_upload,
+        addRemoveLinks: true,
+        method: "POST",
+        params: 'file_upload',
+        maxFilesize: 256 * 4 * 2,
+        dictFileTooBig: 'Image is bigger than 4MB',
+        acceptedFiles: ".jpeg,.jpg,.png,.gif",
+        uploadMultiple: true,
+        dictDefaultMessage: "Drop files here or click to upload.",
+        parallelUploads: 1,
+        maxFiles: 12,
+        clickable: true,
+        timeout: 180000,
+        init: function () {
+            mydropzone = this;
+
+            $("#submit-all").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                mydropzone.processQueue();
+                popup_scan_date.magnificPopup('close');
+                toastr.success('Image Uploaded Successfully', 'Success', {
                     "closeButton": true,
                     "debug": false,
                     "newestOnTop": false,
@@ -222,7 +372,133 @@
                     "showMethod": "fadeIn",
                     "hideMethod": "fadeOut"
                 });
-                setTimeout(success_redirect, 2000);
+            });
+            mydropzone.on('sending', function (file, xhr, formData) {
+                formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+                // Append all form inputs to the formData Dropzone will POST
+            });
+        },
+        success: function (file, data) {
+            {#console.log(data);#}
+            if (data.status === 'success') {
+                console.log(data.date);
+                $(".dz-remove").hide();
+                if (data.date !== null && data.date !== '') {
+                    $("#date_expiry_picker").val(data.date).change();
+                    {#$("#{{ form.quality.id_for_label }}").val(data.quality).change();#}
+                }
+
+            } else {
+                toastr.error('Image Upload Failed', 'Error', {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
+            }
+        },
+    }
+
+    const popupForm = $("#scan-barcode-form");
+
+    $("#scan-BarcodeBtn").on("click", function(e) {
+        e.preventDefault();
+        $("#cam-feed").attr("src", "{% url 'dashboard:camera_feed' %}");
+
+    })
+
+
+    $("#btn_ReadQRCode").on("click", function (e) {
+        console.log("Ajax request triggered.");
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'dashboard:camera_feed' %}",
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                dataType: "json",
+            },
+            success: function (data) {
+                if (data.barcode_data !== null && data.barcode_data !== '') {
+                    {#console.log(data);#}
+                    $("#txtBarcode").val(data.barcode_data).change();
+                    $("#lbl_LastModified").html(
+                        "Last modified at: " + data.file_saved_at
+                    );
+                    $("#{{ form.barcode_input.id_for_label }}").val(data.barcode_data).change();
+                    if (data.barcode_name !== null && data.barcode_name !== '') {
+                        $("#txtName").val(data.barcode_name).change();
+                        $("#{{ form.name.id_for_label }}").val(data.barcode_name).change();
+                        $("#{{ form.name.id_for_label }}").removeAttr("readonly");
+                        $("#btn_Close").removeAttr("hidden");
+
+
+                    }
+                    else {
+                        $("#txtName").val("No name found").change();
+                        $("#btn_AddNewBarcode").removeAttr("hidden");
+                    }
+                } else {
+                    console.log(data);
+                    $("#txtBarcode").val("").change();
+                    $("#lbl_LastModified").html("<h3><em>No data or file not found. Scan barcode again.</em></h3>");
+                }
+            },
+            error: function () {
+                console.log(error);
+            }
+        });
+    });
+
+    $("#btn_Close").on("click", function (e) {
+        e.preventDefault();
+        popupForm.magnificPopup("close");
+        {#$("#form-barcode").remove();#}
+        $("#cam-feed").attr("src", "");
+    });
+
+    function success_redirect() {
+        window.location.href = "{% url 'dashboard:list-products' %}";
+    }
+
+    $("form#fromProductKemasan").submit(function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function(data) {
+                toastr.success('{% if object %}Product Updated Successfully{% else %}Product Added Successfully{% endif %}', 'Success', {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "2000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            });
+            setTimeout(success_redirect, 2000);
             },
             error: function(data) {
                 console.log(data);
@@ -248,41 +524,6 @@
     });
 
 
-    $("#btn_ReadQRCode").on("click", function (e) {
-        console.log("Ajax request triggered.");
-        e.preventDefault();
-        $.ajax({
-            type: "POST",
-            url: "{% url 'dashboard:camera_feed' %}",
-            data: {
-                csrfmiddlewaretoken: "{{ csrf_token }}",
-                dataType: "json",
-            },
-            success: function (data) {
-                if (data.barcode_data !== null && data.barcode_data !== '') {
-                    console.log(data);
-                    $("#txt_BarcodeData").val(data.barcode_data).change();
-                    $("#lbl_LastModified").html(
-                        "Last modified at: " + data.file_saved_at
-                    );
-                    if (data.barcode_name !== null && data.barcode_name !== '') {
-                        $("#txt_BarcodeName").val(data.barcode_name).change();
-                    }
-                    else {
-                        $("#txt_BarcodeName").val("No name found").change();
-                        $("#btn_AddNewBarcode").removeAttr("hidden");
-                    }
-                } else {
-                    console.log(data);
-                    $("#txt_BarcodeData").val("").change();
-                    $("#lbl_LastModified").html("<h3><em>No data or file not found. Scan barcode again.</em></h3>");
-                }
-            },
-            error: function () {
-                console.log(error);
-            }
-        });
-    });
     </script>
 
 {% endblock extra_javascript %}
