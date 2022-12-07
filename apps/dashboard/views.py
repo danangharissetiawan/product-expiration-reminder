@@ -57,19 +57,27 @@ class DashboardView(LoginRequiredMixin, View):
         all_products = products.get_all_products()
 
         lastest_products = products.get_lastest_products()
+        product_safety = 0
+        product_warning = 0
+        product_danger = 0
+        if all_count > 0:
+            product_safety = (ps + ns) / all_count * 100
+            product_warning = (pw + nw) / all_count * 100
+            product_danger = (pd + nd) / all_count * 100
+
 
         context = {
             'title': 'Dashboard',
             'pageview': 'TimeLock',
-            'safety_count': ps + ns,
+            'safety_count': int(),
             'warning_count': pw + nw,
             'danger_count': pd + nd,
             'all_count': all_count,
             'lastest_products': lastest_products,
             'products': all_products,
-            'percent_safety': round((ps + ns) / all_count * 100, 2),
-            'percent_warning': round((pw + nw) / all_count * 100, 2),
-            'percent_danger': round((pd + nd) / all_count * 100, 2),
+            'percent_safety': round(product_safety, 2),
+            'percent_warning': round(product_warning, 2),
+            'percent_danger': round(product_danger, 2),
         }
 
         return render(request, 'menu/index.html', context)
