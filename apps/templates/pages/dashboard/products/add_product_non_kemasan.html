@@ -84,7 +84,9 @@
                                             <div class="col-lg-5">
                                                 <div class="mb-3">
                                                     <label for="{{ form.quality.id_for_label }}">{{ form.quality.label }}</label>
-                                                    <input id="{{ form.quality.id_for_label }}" name="{{ form.quality.name }}" type="text" class="form-control" value="{{ object.quality }}" readonly>
+                                                    <input id="{{ form.quality.id_for_label }}" name="{{ form.quality.name }}" type="text" class="form-control" value="{{ object.quality }}" hidden readonly>
+                                                    <input id="dumyQuality" name="" type="text" class="form-control" value="{{ object.quality }}" readonly>
+
                                                     {% if form.quality.errors %}
                                                         {% for error in form.quality.errors %}
                                                             <div class="alert alert-danger mt-3" role="alert">
@@ -148,9 +150,8 @@
 
     <div class="card mfp-hide mfp-popup-form mx-auto" id="test-form">
         <div class="card-body">
-            <h4 class="card-title">Dropzone</h4>
-            <p class="card-title-desc">DropzoneJS is an open source library
-                that provides drag’n’drop file uploads with image previews.
+            <h4 class="card-title">Upload your image</h4>
+            <p class="card-title-desc">Drop your files here or click to upload.</p>
             </p>
 
             <div>
@@ -263,18 +264,20 @@
         success: function (file, data) {
             console.log(data);
             if (data.status === 'success') {
-                if (data.quality === 'g') {
-                    data.quality = 'Good';
-                } else if (data.quality === 'b') {
-                    data.quality = 'Bad';
-                } else {
-                    data.quality = 'Mixed';
-                }
-                console.log(data);
+
+
                 $(".dz-remove").hide();
                 if (data.name_product !== null && data.quality !== '') {
                     $("#{{ form.name.id_for_label }}").val(data.name_product).change();
                     $("#{{ form.quality.id_for_label }}").val(data.quality).change();
+                    if (data.quality === 'g') {
+                        data.quality = 'Good';
+                    } else if (data.quality === 'b') {
+                        data.quality = 'Bad';
+                    } else {
+                        data.quality = 'Mixed';
+                    }
+                    $("#dumyQuality").val(data.quality).change();
                 }
 
             } else {

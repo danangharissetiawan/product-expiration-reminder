@@ -14,7 +14,6 @@ def predict(image_path, model_path, label_path, image_size):
     # Read Label
     with open(label_path) as f:
         labels = [line.strip() for line in f.readlines()]
-
     labels = sorted(labels)
 
     # Load the model
@@ -30,18 +29,13 @@ def predict(image_path, model_path, label_path, image_size):
 
     # Classify the input image
     predictions = model.predict(img_array)
-
     pred = np.argmax(predictions, axis=1)
-
-    # Map the label
-    # labels = (train_dataset.class_indices)
-    # labels = dict((v,k) for k,v in labels.items())
     pred = [labels[k] for k in pred]
+    
     return pred
 
 
 def predict_fruit(image_path):
-    # Read Label
     label_path = settings.LABEL_FRUIT_PATH
     model_path = settings.MODEL_FRUIT_PATH
     image_size = 256
@@ -58,7 +52,7 @@ def predict_fruit(image_path):
 
 
 def predict_date_expired(image_path):
-    # Read Label
+
     label_path = settings.LABEL_DATE_PATH
     model_path = settings.MODEL_DATE_PATH
     image_size = 160

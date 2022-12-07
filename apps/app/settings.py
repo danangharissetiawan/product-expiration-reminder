@@ -167,7 +167,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LABEL_FRUIT_PATH = Path(__file__).resolve().parent.parent.parent / "models/fruitNet/labels.txt"
 
-MODEL_FRUIT_PATH = Path(__file__).resolve().parent.parent.parent / "models/fruitNet/fruitnet_model.h5"
+MODEL_FRUIT_PATH = Path(__file__).resolve().parent.parent.parent / "models/fruitNet/fruitNet_99.h5"
 
 LABEL_DATE_PATH = Path(__file__).resolve().parent.parent.parent / "models/date-expired/date_exp_labels.txt"
 
