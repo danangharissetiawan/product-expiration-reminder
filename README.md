@@ -65,7 +65,23 @@ NOTE: This project is only working on python 3.7
     ```bash
     python manage.py test
     ```
-   
+
+### Models
+- Fruit Model [fruitnet.h5](https://drive.google.com/file/d/1gapBydRn64ZzcTMPn99jhP8xB1w1Hfxg/view?usp=share_link)
+- Expiration Date Model [expnet.h5](https://drive.google.com/file/d/1Ch5KwbrsBoUNKtxPpLnMvtVTVFZ5se2H/view?usp=share_link)
+
+### Dataset
+- [Fruit Dataset](https://www.kaggle.com/moltean/fruits)
+- [Expiration Date Dataset](https://www.kaggle.com/datasets/danangharissetiawan/dateexpiration)
+
+### Notebooks
+- Date Detection [date_detection.ipynb](https://www.kaggle.com/code/danangharissetiawan/date-expired-incresnetv2-100finet/)
+- Fruit Detection [fruit_detection.ipynb](https://www.kaggle.com/code/danangharissetiawan/fruit-quality-classification/)
+
+### Labels
+- Date Expiration Labels [date_labels.txt](models/date-expired/date_exp_labels.txt)
+- Fruit Labels [fruit_labels.txt](models/fruitNet/labels.txt)
+
 ### License
 MIT License (MIT) - see [LICENSE](LICENSE) for more details
 
