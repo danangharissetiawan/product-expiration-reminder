@@ -134,8 +134,13 @@ dmypy.json
 ./.idea
 /.idea
 
-models/date-expired/*
-models/fruitNet/*
+models/fruitNet/fruitNet_99.h5
+models/fruitNet/fruitNet_99_weights.h5
+models/fruitNet/fruitnet_model.h5
+models/fruitNet/resnet_model.h5
+
+models/date-expired/inception_resnetv2_64_10.h5
+models/date-expired/inception_resnetv2_98.h5
 
 yolov5/weights/yolov5s.pt
 yolov5/weights/yolov5x.pt
